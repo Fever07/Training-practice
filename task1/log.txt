@@ -1,0 +1,11 @@
+commit 34fb05c622fb1e05a156daeaf3a22ae98ed606e1
+Author: Dmitry Voynov <voynov_dmitry@mail.ru>
+Date:   Tue Feb 7 16:49:24 2017 +0300
+
+    complete commit
+
+commit 29a91abc8424575e13f122c4eac8190d7d00997f
+Author: Dmitry Voynov <voynov_dmitry@mail.ru>
+Date:   Tue Feb 7 16:46:40 2017 +0300
+
+    add .gitignore
