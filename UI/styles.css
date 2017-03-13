@@ -1,8 +1,16 @@
+.background {
+    background-color: #dcdcdc;
+}
+
 .ground {
     background-color: white;
     min-width: 1000px;
     margin-left: 15%;
     margin-right: 15%;
+}
+
+.header-table {
+    width: 100%;
 }
 
 .header {
@@ -18,29 +26,33 @@ h1.margin {
     margin-left: 40px;
 }
 
-table.topmenu {
+table.top-menu {
     border-spacing: 5px;
     margin-top: 10px;
 }
 
-td.leftcol {
+td.left-col {
     text-align: left;
-    width: 72%;
+    width: 65%;
 }
 
-td.rightcol {
+td.right-col {
     text-align: center;
 }
 
-.menuitem {
+.menu-item {
     border-radius: 8px;
     border: 1px solid black;
 }
 
 table.central {
     border-spacing: 14px;
-    margin-left: 13%;
+}
 
+table.news-table {
+    min-height: 900px;
+    border-spacing: 14px;
+    margin-left: 13%;
 }
 
 .footer {
@@ -50,24 +62,25 @@ table.central {
     text-align: center;
 }
 
-.footertext {
+.footer-text {
     color: lightslategray;
     font-style: italic;
 }
 
-td.newscell {
+td.news-cell {
+    max-height: 400px;
     color: white;
-    background-color: cadetblue;
+    background-color: #5f9ea0;
     border-radius: 10px;
     box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
     width: 33%;
 }
 
-td.newscell:hover {
+td.news-cell:hover {
     background-color: #5B2929
 }
 
-.newstitle {
+.news-title {
     font-size: 20px;
 }
 
@@ -76,7 +89,7 @@ td.newscell:hover {
     color: lightgrey;
 }
 
-.newstext {
+.news-text {
     font-size: 12px;
     font-family: sans-serif;
 }
