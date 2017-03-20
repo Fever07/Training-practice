@@ -3,7 +3,7 @@ var articlesBaseService = (function () {
     var articles = [
         {
             id: '1',
-            title: ' В Минске девушка не пропустила скорую, в результате столкнулись три авто',
+            title: 'В Минске девушка не пропустила скорую, в результате столкнулись три авто',
             summary: 'Вчера, 26 февраля, около 21:30 на пересечении Долгиновского тракта и улицы Орловской в Минске столкнулись три автомобиля.',
             createdAt: new Date('2017-03-02T21:40:24'),
             author: 'Татьяна Терентьева',
@@ -248,16 +248,13 @@ var articlesBaseService = (function () {
         var filteredArticles = articles.filter(function (article) {
             var ans = true;
             if (typeof filter != 'undefined') {
-                if (typeof filter.author === 'string')
-                    if (article.author != filter.author)
-                        ans = false;
-                if (typeof filter.createdAtFrom === 'object')
-                    if (article.createdAt < filter.createdAtFrom)
-                        ans = false;
-                if (typeof filter.createdAtTo === 'object')
-                    if (article.createdAt > filter.createdAtTo)
-                        ans = false;
-                if (typeof filter.tags === 'object')
+                if (filter.author && filter.author != article.author)
+                    ans = false;
+                if (filter.createdAtFrom && article.createdAt < filter.createdAtFrom)
+                    ans = false;
+                if (filter.createdAtTo && article.createdAt < filter.createdAtTo)
+                    ans = false;
+                if (filter.tags != null)
                     filter.tags.forEach(
                         function (item, i, arr) {
                             var currtag = item;
@@ -287,34 +284,7 @@ var articlesBaseService = (function () {
     }
 
     function validateArticle(article) {
-        if (typeof article.id === "string")
-            if (typeof article.title === "string")
-                if (article.title.length <= 100)
-                    if (typeof article.summary === "string")
-                        if (article.summary.length <= 200)
-                            if (typeof article.author === "string")
-                                if (typeof article.content === "string")
-                                    if (typeof article.tags === "object")
-                                        if ((article.tags.length >= 1) && (article.tags.length <= 5))
-                                            return true;
-                                        else
-                                            return false;
-                                    else
-                                        return false;
-                                else
-                                    return false;
-                            else
-                                return false;
-                        else
-                            return false;
-                    else
-                        return false;
-                else
-                    return false;
-            else
-                return false;
-        else
-            return false;
+        return (article.id && article.title && article.summary && article.content && article.author && article.tags);
     }
 
     function addArticle(article) {
@@ -329,14 +299,24 @@ var articlesBaseService = (function () {
                 );
                 articles.sort(compareDate);
                 tags.sort();
-                if (isSatisfyingFilter(article, viewService.currentFilter))
-                    viewService.updateUI();
                 return article.createdAt;
             } else
                 return false;
         } else
             return false;
 
+    }
+
+    function createEmptyArticle() {
+        return {
+            id: '' + articles.length,
+            title: '',
+            summary: '',
+            createdAt: new Date(),
+            author: '',
+            content: '',
+            tags: ['']
+        }
     }
 
     function editArticle(id, article) {
@@ -379,8 +359,6 @@ var articlesBaseService = (function () {
                 if (check[2].is == 1)
                     art.content = article.content;
                 art.createdAt = new Date();
-                if (isSatisfyingFilter(article, viewService.currentFilter))
-                    viewService.updateUI();
                 return true;
             }
         } else
@@ -388,12 +366,7 @@ var articlesBaseService = (function () {
     }
 
     function removeArticle(id) {
-        return articles.forEach(function (article, i) {
-            if (article.id === id)
-                if (isSatisfyingFilter(articles.splice(i, 1)[0], viewService.currentFilter)) {
-                    viewService.updateUI();
-                }
-        })
+        return articles.splice(articles.indexOf(getArticle(id)), 1);
     }
 
     articles.forEach(function (article, i, arr) {
@@ -411,18 +384,29 @@ var articlesBaseService = (function () {
         addArticle: addArticle,
         editArticle: editArticle,
         removeArticle: removeArticle,
+        createEmptyArticle: createEmptyArticle,
         articles: articles,
-        users: users
+        users: users,
+        tags: tags
     }
 
 }());
 
 var viewService = (function () {
 
+    const states = ['feed', 'details', 'edit', 'add', 'login', 'submit', 'error'];
+    var currentState = 'feed';
+    var currentConfiguration = {
+        currentState: 'feed'
+    };
     var currentUser = "Иван Иванов";
     var currentArticlesList = articlesBaseService.articles;
     var currentShownArticlesList = currentArticlesList.slice(0, 9);
     var currentFilter = {};
+    var currentPage = 1;
+    var currentNumOfPages = articlesBaseService.articles.length;
+    var currentArticle;
+
 
     function dateToString(date) {
         var months = ["SECRET KEY", "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
@@ -434,8 +418,23 @@ var viewService = (function () {
         return ret;
     }
 
-    function init() {
+    function setHeaders() {
         if (currentUser != null) {
+
+            function handleMenu(event) {
+                if (event.target.className == 'menu-item') {
+                    if (event.target.textContent == 'Главная') {
+                        currentState = 'feed';
+                        currentPage = 1;
+                        updateUI();
+                    } else if (event.target.textContent == 'Добавить новость') {
+                        currentArticle = {};
+                        currentState = 'add';
+                        updateUI();
+                    }
+                }
+            }
+
             var userName = document.createElement("td");
             userName.innerHTML = '<b>' + currentUser + '</b>';
             var row = document.getElementsByClassName("top-menu")[0].firstElementChild.firstElementChild;
@@ -444,68 +443,377 @@ var viewService = (function () {
             addNews.className = "menu-item";
             addNews.innerHTML = 'Добавить новость';
             row.insertBefore(addNews, row.lastElementChild);
+            document.getElementsByClassName("top-menu")[0].addEventListener('click', handleMenu);
         }
+        else {
 
-
-        showArticles();
-    }
-
-    function updateUI() {
-        currentArticlesList = articlesBaseService.getArticles(0, articlesBaseService.articles.length, currentFilter);
-        currentShownArticlesList = currentArticlesList.slice(0, 9);
-        showArticles();
-    }
-    
-    function showArticles() {
-        var newsTable = document.getElementsByClassName("news-table")[0];
-        var row = newsTable.firstElementChild.firstElementChild;
-        while (row != null) {
-            var child = row.firstElementChild;
-            while (child != null) {
-                row.removeChild(child);
-                child = row.firstElementChild;
-            }
-            row = row.nextElementSibling
         }
-        row = newsTable.firstElementChild.firstElementChild;
-        currentShownArticlesList.forEach(function (article, i) {
-            var cell = document.createElement("td");
-            cell.className = "news-cell";
-            var tempHTML =
-                    '<span class="news-title">' + article.title + '</span>' + '\n' +
-                    '<br>' + '\n' +
-                    '<span class="author">' + article.author + '</span>' + '\n' +
-                    '<hr size="2" color="white">' + '\n' +
-                    '<span class="news-text">' + article.summary + '</span>' + '\n' +
-                    '<br>' + '\n' +
-                    '<br>' + '\n';
-            article.tags.forEach(function (tag) {
-                tempHTML += '<span class="tag">' + '#' + tag + '</span> ';
-            });
-            tempHTML +=
-                    '' + '\n' +
-                    '<hr size="1" color="lightgray">' + '\n' +
-                    '' + dateToString(article.createdAt) + '\n'
-                ;
-            cell.innerHTML = tempHTML;
-            row.appendChild(cell);
-            if (i % 3 == 2) {
-                row = row.nextElementSibling;
-            }
-        })
     }
 
-    function setFilter(filter) {
-        currentFilter = filter;
+    function init() {
+        setHeaders();
         updateUI();
+    }
+
+    function setListeners() {
+        function handleFilter(event) {
+            if (event.target.id == 'name') {
+                if (event.target.value == 'Все авторы')
+                    currentFilter.author = null;
+                else
+                    currentFilter.author = event.target.value;
+                currentPage = 1;
+                updateDynamic();
+            } else if (event.target.id == 'date') {
+
+            } else if (event.target.id == 'tags') {
+                if (event.target.value == 'Все теги')
+                    currentFilter.tags = null;
+                else
+                    currentFilter.tags = [event.target.value];
+                currentPage = 1;
+                updateDynamic();
+            }
+        }
+
+        function handleDetails(event) {
+            if (event.target.className == 'news-cell') {
+                currentArticle = articlesBaseService.getArticle(event.target.id);
+                currentState = 'details';
+                updateUI();
+            }
+        }
+
+        function handleEdit(event) {
+            if (event.target.className == 'news-cell') {
+                currentArticle = articlesBaseService.getArticle(event.target.id);
+                currentState = 'edit';
+                updateUI();
+            }
+        }
+
+        function handleSave() {
+            if (currentState == 'edit') {
+                var articleChanged = {};
+                articleChanged.title = document.getElementById('title').value;
+                articleChanged.summary = document.getElementById('summary').value;
+                articleChanged.content = document.getElementById('content').value;
+                articlesBaseService.editArticle(currentArticle.id, articleChanged);
+                currentState = 'feed';
+                updateUI();
+            } else {
+                currentArticle = articlesBaseService.createEmptyArticle();
+                currentArticle.title = document.getElementById('title').value;
+                currentArticle.summary = document.getElementById('summary').value;
+                currentArticle.content = document.getElementById('content').value;
+                currentArticle.author = currentUser;
+                articlesBaseService.addArticle(currentArticle);
+                currentState = 'feed';
+                updateUI();
+            }
+        }
+
+        function handleCancel() {
+            currentState = 'feed';
+            updateUI();
+        }
+
+        function handlePagination() {
+            if (event.target.className == 'pagination-elem') {
+                currentPage = parseInt(event.target.id);
+                updateDynamic();
+            }
+        }
+
+        if (currentState == 'feed') {
+            var selectLi = document.getElementsByClassName("filter-list")[0].firstElementChild;
+            while (selectLi != null) {
+                selectLi.firstElementChild.addEventListener('change', handleFilter);
+                selectLi = selectLi.nextElementSibling;
+            }
+            document.getElementsByClassName("news-table")[0].addEventListener('click', handleDetails);
+            document.getElementsByClassName("news-table")[0].addEventListener('contextmenu', handleEdit);
+            document.getElementsByClassName("pagination")[0].addEventListener('click', handlePagination);
+        } else if (currentState == 'details') {
+
+        } else if (currentState == 'edit' || currentState == 'add') {
+            document.getElementsByClassName("edit-bot-right-col")[0].addEventListener('click', handleSave);
+            document.getElementsByClassName("edit-bot-right-col")[1].addEventListener('click', handleCancel);
+        }
+
+    }
+
+    function updateStatic() {
+        var divMain = document.getElementById('main');
+        divMain.parentNode.removeChild(divMain);
+        divMain = document.createElement('div');
+        divMain.id = 'main';
+        if (currentState == 'feed') {
+            divMain.className = 'feed';
+            divMain.innerHTML =
+                '<table class="central">'+
+                '                   <tr>'+
+                '<td class="left-panel">'+'</td>'+
+                '                        <td>'+
+                '                            <table class="news-table">'+
+                '                                <tr>'+
+                '                                    <td class="news-cell-td"></td>'+
+                '                                    <td class="news-cell-td"></td>'+
+                '                                    <td class="news-cell-td"></td>'+
+                '                                </tr>'+
+                '                                <tr>'+
+                '                                    <td class="news-cell-td"></td>'+
+                '                                    <td class="news-cell-td"></td>'+
+                '                                    <td class="news-cell-td"></td>'+
+                '                                </tr>'+
+                '                                <tr>'+
+                '                                    <td class="news-cell-td"></td>'+
+                '                                    <td class="news-cell-td"></td>'+
+                '                                    <td class="news-cell-td"></td>'+
+                '                                </tr>'+
+                '                            </table>'+
+                '                        </td>'+
+                '                        <td class="right-panel">'+
+                '                            <ul class="filter-list">'+
+                '                                <li class="filter-element">'+
+                '                                    <select class="filter" id="name">'+
+                '                                        <option id="-1">'+'Все авторы'+'</option>'+
+                '                                    </select>'+
+                '                                </li>'+
+                '                                <li class="filter-element">'+
+                '                                    <select class="filter" id="date">'+
+                '                                        <option id="-1">'+'Дата'+'</option>'+
+                '                                    </select>'+
+                '                                </li>'+
+                '                                <li class="filter-element">'+
+                '                                    <select class="filter" id="tags">'+
+                '                                        <option id="-1">'+'Все теги'+'</option>'+
+                '                                    </select>'+
+                '                                </li>'+
+                '                            </ul>'+
+                '                        </td>'+
+                '                    </tr>'+
+                '                </table>'+
+                '            </div>'+
+                '            <table class="pagination">'+
+                '                <tr>'+
+                '                </tr>'+
+                '            </table>';
+            document.getElementsByClassName('ground')[0].insertBefore(divMain, document.getElementsByClassName('footer')[0]);
+            currentFilter.author = null;
+            currentFilter.tags = null;
+            var selectUsers = document.getElementById('name');
+            articlesBaseService.users.forEach(function (user, i) {
+                var userOption = document.createElement('option');
+                userOption.id = i;
+                userOption.textContent = user;
+                selectUsers.options[selectUsers.options.length] = userOption;
+            });
+            var selectTags = document.getElementById('tags');
+            articlesBaseService.tags.forEach(function (tag, i) {
+                var tagOption = document.createElement('option');
+                tagOption.id = i;
+                tagOption.appendChild(document.createTextNode(tag));
+                selectTags.appendChild(tagOption);
+            });
+        } else if (currentState == 'details') {
+            divMain.className = 'details-central';
+            divMain.innerHTML =
+                '<div class="details-title">' +
+                '</div>' +
+                '<div class="details-author">' +
+                '</div>' +
+                '<hr size="2" color="black">' +
+                '<div class="details-content">' +
+                '</div>' +
+                '<div class="details-tags">';
+            document.getElementsByClassName('ground')[0].insertBefore(divMain, document.getElementsByClassName('footer')[0]);
+        } else if (currentState == 'edit' || currentState == 'add') {
+            divMain.className = 'edit-central';
+            divMain.innerHTML =
+                '            <div class="edit-top">'+
+                '                <table class="edit-central-table">'+
+                '                    <tr class="edit-top">'+
+                '                        <td class="edit-top-left-col">'+
+                '                            Добавить / Редактировать новость'+
+                '                        </td>'+
+                '                        <td class="edit-top-right-col">'+
+                '                        </td>'+
+                '                    </tr>'+
+                '                </table>'+
+                '            </div>'+
+                '            <div>'+
+                '                <form>'+
+                '                    <input class="edit-form" type="text" placeholder="Заголовок..." maxlength="100" id="title">'+
+                '                </form>'+
+                '            </div>'+
+                '            <div>'+
+                '                <form>'+
+                '                    <textarea class="edit-form" placeholder="Краткое описание..." maxlength="200" id="summary"></textarea>'+
+                '                </form>'+
+                '            </div>'+
+                '            <div>'+
+                '                <form>'+
+                '                    <input class="edit-form" type="text" placeholder="Теги..." id="tags">'+
+                '                </form>'+
+                '            </div>'+
+                '            <div>'+
+                '                <form>'+
+                '                    <textarea class="edit-form-content" placeholder="Текст..." rows="10" id="content"></textarea>'+
+                '                </form>'+
+                '            </div>'+
+                '            <div class="edit-bot">'+
+                '                <table class="edit-central-table">'+
+                '                    <tr>'+
+                '                        <td class="edit-bot-left-col">'+
+                '                        </td>'+
+                '                        <td class="edit-bot-right-col">'+
+                '                            Сохранить'+
+                '                        </td>'+
+                '                        <td class="edit-bot-right-col">'+
+                '                            Отмена'+
+                '                        </td>'+
+                '                    </tr>'+
+                '                </table>'+
+                '            </div>';
+            document.getElementsByClassName('ground')[0].insertBefore(divMain, document.getElementsByClassName('footer')[0]);
+        }
+
+    }
+
+    function updateDynamic(action) {
+        if (currentState == 'feed') {
+            currentArticlesList = articlesBaseService.getArticles(0, articlesBaseService.articles.length, currentFilter);
+            currentNumOfPages = (currentArticlesList.length + 8) / 9 | 0;
+            currentShownArticlesList = currentArticlesList.slice((currentPage - 1) * 9, currentPage * 9);
+            var newsTable = document.getElementsByClassName("news-table")[0];
+            var row = newsTable.firstElementChild.firstElementChild;
+            var td = row.firstElementChild;
+            while (row != null) {
+                while (td != null) {
+                    if (td.firstElementChild != null)
+                        td.removeChild(td.firstElementChild);
+                    td = td.nextElementSibling;
+                }
+                row = row.nextElementSibling;
+                if (row != null)
+                    td = row.firstElementChild;
+            }
+            if (currentArticlesList.length > 0) {
+                row = newsTable.firstElementChild.firstElementChild;
+                td = row.firstElementChild;
+                currentShownArticlesList.forEach(function (article) {
+                    var cell = document.createElement("div");
+                    cell.className = "news-cell";
+                    cell.id = article.id;
+                    var tempHTML =
+                        '<span class="news-title">' + article.title + '</span>' + '\n' +
+                        '<br>' + '\n' +
+                        '<span class="author">' + article.author + '</span>' + '\n' +
+                        '<hr size="2" color="white">' + '\n' +
+                        '<span class="news-text">' + article.summary + '</span>' + '\n' +
+                        '<br>' + '\n' +
+                        '<br>' + '\n';
+                    article.tags.forEach(function (tag) {
+                        tempHTML += '<span class="tag">' + '#' + tag + '</span> ';
+                    });
+                    tempHTML +=
+                        '' + '\n' +
+                        '<hr size="1" color="lightgray">' + '\n' +
+                        '' + dateToString(article.createdAt) + '\n'
+                    ;
+                    cell.innerHTML = tempHTML;
+                    td.appendChild(cell);
+                    td = td.nextElementSibling;
+                    if (td == null) {
+                        row = row.nextElementSibling;
+                        if (row != null)
+                            td = row.firstElementChild;
+                    }
+                });
+
+                var paginationRow = document.getElementsByClassName('pagination')[0].firstElementChild.firstElementChild;
+                while (paginationRow.firstElementChild != null)
+                    paginationRow.removeChild(paginationRow.firstElementChild);
+
+                    function addElemToPagination(row, id, content, ifChosen) {
+                        var newElem = document.createElement('td');
+                        newElem.id = id;
+                        if (ifChosen)
+                            newElem.className = 'pagination-elem-chosen';
+                        else
+                            newElem.className = 'pagination-elem';
+                        newElem.innerHTML = content;
+                        row.appendChild(newElem);
+                    }
+
+                    if (currentPage >= 3)
+                        addElemToPagination(paginationRow, currentPage - 2, '...');
+                    if (currentPage >= 2)
+                        addElemToPagination(paginationRow, currentPage - 1, currentPage - 1);
+                    addElemToPagination(paginationRow, currentPage, currentPage, true);
+                    if (currentPage <= currentNumOfPages - 1)
+                        addElemToPagination(paginationRow, currentPage + 1, currentPage + 1);
+                    if (currentPage <= currentNumOfPages - 2)
+                        addElemToPagination(paginationRow, currentPage + 2, '...');
+
+            } else {
+                var paginationRow = document.getElementsByClassName('pagination')[0].firstElementChild.firstElementChild;
+                while (paginationRow.firstElementChild != null)
+                    paginationRow.removeChild(paginationRow.firstElementChild);
+
+            }
+        } else if (currentState == 'details') {
+            var detailsDiv = document.getElementsByClassName('details-central')[0];
+            detailsDiv.getElementsByClassName('details-title')[0].textContent = currentArticle.title;
+            detailsDiv.getElementsByClassName('details-author')[0].textContent = currentArticle.author;
+            detailsDiv.getElementsByClassName('details-content')[0].textContent = currentArticle.content;
+            var tagHTML = '';
+            currentArticle.tags.forEach(function (tag) {
+                tagHTML = tagHTML + '#' + tag + ' ';
+            });
+            detailsDiv.getElementsByClassName('details-tags')[0].textContent = tagHTML;
+        } else if (currentState == 'edit') {
+            document.getElementsByClassName('edit-top-right-col')[0].textContent = 'ID: ' + currentArticle.id;
+            document.getElementsByClassName('edit-bot-left-col')[0].textContent = currentArticle.author + ', ' + dateToString(currentArticle.createdAt);
+            document.getElementById('title').value = currentArticle.title;
+            document.getElementById('summary').value = currentArticle.summary;
+            var tagsInInput = '';
+            currentArticle.tags.forEach(function (tag) {
+               tagsInInput += '#' + tag;
+            });
+            document.getElementById('tags').value = tagsInInput;
+            document.getElementById('content').value = currentArticle.content;
+        } else if (currentState == 'add') {
+            document.getElementsByClassName('edit-top-right-col')[0].textContent = 'ID: ' + articlesBaseService.articles.length;
+            document.getElementsByClassName('edit-bot-left-col')[0].textContent = currentUser + ', ' + dateToString(new Date());
+        }
+        setListeners();
+    }
+
+    function updateUI(article, action) {
+        if (currentState == 'feed') {
+
+        } else if (currentState == 'details') {
+
+        } else if (currentState == 'edit') {
+
+        } else if (currentState == 'login') {
+
+        } else if (currentState == 'submit') {
+
+        } else if (currentState == 'error') {
+
+        }
+        updateStatic();
+        updateDynamic(article, action);
     }
 
     return {
         currentFilter: currentFilter,
         updateUI: updateUI,
         dateToString: dateToString,
-        init: init,
-        setFilter: setFilter
+        init: init
     }
 
 }());

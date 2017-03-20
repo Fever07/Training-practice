@@ -1,76 +1,99 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="details-styles.css">
+    <link rel="stylesheet" type="text/css" href="edit-styles.css">
     <title>DatNews</title>
-
 </head>
 <body class="background">
     <div class="ground" align="center">
-
-        <div>
-            <table class = "header-table">
-                <tr>
-                    <td class="left-col">
-                        <h1 class="margin"><span class="header">Dat</span>News</h1>
-                    </td>
-                    <td class="right-col">
-                        <table class="top-menu">
-                            <tr>
-                                <td class="menu-item">
-                                    Главная
-                                </td>
-                                <td class="menu-item">
-                                    Выход
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </div>
-
-        <hr size="2" color="black">
-
-        <div>
-            <table class="central">
-                <tr>
-                    <td>
-                        <table class="news-table">
-                            <tr>
-                            </tr>
-                            <tr>
-                            </tr>
-                            <tr>
-                            </tr>
-                        </table>
-                    </td>
-
-                    <div>
-                        <td>
-                            <select class="filter">
-                                <option>Имя: </option>
-                                <option>Дата с: </option>
-                                <option>Дата по: </option>
-                                <option>Теги:</option>
-                            </select>
-                        </td>
-                    </div>
-
-                </tr>
-            </table>
-
-        </div>
-
-        <table class="pagination">
+        <table class="header-table">
             <tr>
-                <td><b>1</b></td>
-                <td>2</td>
-                <td>3</td>
-                <td>...</td>
+                <td class="left-col">
+                    <div id="header">
+                        <h1 class="margin">
+                            <span class="header">Dat</span>News</h1>
+                    </div>
+                </td>
+                <td class="right-col">
+                    <table class="top-menu">
+                        <tr>
+                            <td class="menu-item">Главная</td>
+                            <td class="menu-item">Выход</td>
+                        </tr>
+                    </table>
+                </td>
             </tr>
         </table>
+        <hr size="2" color="black">
+        <div class="feed" id="main">
+
+            <div>
+                <table class="central">
+                    <tr>
+                        <td>
+                            <table class="news-table">
+                                <tr>
+                                    <td class="news-cell-td"></td>
+                                    <td class="news-cell-td"></td>
+                                    <td class="news-cell-td"></td>
+                                </tr>
+                                <tr>
+                                    <td class="news-cell-td"></td>
+                                    <td class="news-cell-td"></td>
+                                    <td class="news-cell-td"></td>
+                                </tr>
+                                <tr>
+                                    <td class="news-cell-td"></td>
+                                    <td class="news-cell-td"></td>
+                                    <td class="news-cell-td"></td>
+                                </tr>
+                            </table>
+                        </td>
+
+                        <td>
+                            <ul class="filter-list">
+                                <li class="filter-element">
+                                    <select class="filter" id="name">
+                                        <option>
+                                            Все авторы
+                                        </option>
+                                    </select>
+                                </li>
+                                <li class="filter-element">
+                                    <select class="filter" id="date">
+                                        <option>
+                                            Дата
+                                        </option>
+                                    </select>
+                                </li>
+                                <li class="filter-element">
+                                    <select class="filter" id="tags">
+                                        <option>
+                                            Все теги
+                                        </option>
+                                    </select>
+                                </li>
+                            </ul>
+                        </td>
+
+
+                    </tr>
+                </table>
+
+            </div>
+
+            <table class="pagination">
+                <tr>
+                    <td><b>1</b></td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>...</td>
+                </tr>
+            </table>
+        </div>
 
         <table class="footer">
             <tr>
@@ -83,11 +106,10 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <span class="footer-text">Дата последнего изменения: 13.03.17</span>
+                    <span class="footer-text">Дата последнего изменения: 20.03.17</span>
                 </td>
             </tr>
         </table>
-
     </div>
 
 <script src="script.js"></script>

@@ -1,0 +1,86 @@
+.edit-central {
+    margin-top: 20px;
+    margin-left: 15%;
+    margin-right: 15%;
+}
+
+.edit-title, .edit-author, .edit-content, .edit-tags, .edit-date {
+    text-align: left;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.edit-top {
+    margin-bottom: 10px;
+}
+
+.edit-central-table {
+    width: 100%;
+}
+
+.edit-top-left-col {
+    text-align: left;
+    font-family: Helvetica;
+    font-size: 25px;
+}
+
+.edit-top-right-col {
+    text-align: right;
+    font-family: Helvetica;
+    font-size: 25px;
+}
+
+.edit-form {
+    width: 100%;
+    border: solid black 1px;
+    margin-bottom: 7px;
+    font-family: "Times New Roman";
+    font-size: 20px
+
+}
+
+.edit-author {
+    font-size: 22px;
+    font-style: italic;
+    color: #A89494;
+}
+
+.edit-form-content {
+    width: 100%;
+    border: solid black 1px;
+    margin-bottom: 7px;
+    font-family: "Times New Roman";
+    font-size: 20px;
+}
+
+.edit-tags {
+    font-family: "Helvetica";
+    font-size: 20px;
+}
+
+.edit-bot {
+    margin-bottom: 10px;
+}
+
+.edit-bot-left-col {
+    text-align: left;
+    font-size: 18px;
+}
+
+.edit-bot-right-col {
+    cursor: default;
+    border: solid black 1px;
+    border-radius: 6px;
+    text-align: center;
+    font-family: Helvetica;
+    font-size: 18px;
+}
+
+.edit-bot-right-col:hover {
+    background-color: #ECCFCF;
+}
+
+.edit-date {
+
+}
+
