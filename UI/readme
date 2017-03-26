@@ -1,9 +1,16 @@
-1) Detailed + (LBM)
-2) Edit +- (no  tags) (RBM)
-3) Add +- (no tags)
-4) Filter +- (no data)
-5) Pagination +
+Now its full dynamic version, working with localStorage.
+Accounts to login:
 
-* User login -
-* Work with localhost -
-* Buttons (delete, edit/add at Detailed) -
+ login: 'Vanvan'
+ password: '123456'
+ --username: 'Иван Иванов'
+
+ login: 'Nikoma'
+ password: '1234567'
+ --username: 'Николай Малышев'
+
+ login: 'Tanyusha'
+ password: '777ppxx'
+ --username: 'Татьяна Терентьева'
+
+(all textfields are case-sensitive!)
