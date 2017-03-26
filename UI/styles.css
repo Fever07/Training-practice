@@ -1,5 +1,6 @@
 .background {
     background-color: #dcdcdc;
+    background-image: url(sakura.jpg);
 }
 
 .ground {
@@ -10,38 +11,46 @@
 }
 
 .header-table {
+    padding-top: 20px;
+    padding-bottom: 20px;
     width: 100%;
+}
+
+.header-pointer {
+    margin-left: 40px;
+    cursor: pointer;
+    font-size: 44px;
+}
+
+.header-pointer::selection {
+    background: transparent;
 }
 
 .header {
     color: #AD1F1F;
 }
 
-h1 {
-    color: black;
-    font-size: 35px;
-}
-
-h1.margin {
-    margin-left: 40px;
+.header::selection {
+    background: transparent;
 }
 
 table.top-menu {
     border-spacing: 5px;
     margin-top: 10px;
+    margin-right: 80px;
 }
 
 td.left-col {
     text-align: left;
-    width: 65%;
+
 }
 
 td.right-col {
-    horiz-align: right;
-    text-align: center;
+
 }
 
 .menu-item {
+    background-color: white;
     cursor: default;
     border-radius: 8px;
     border: 1px solid black;
@@ -60,15 +69,18 @@ td.right-col {
 }
 
 .right-panel {
-    width: 13%;
+    vertical-align: top;
+    width: 16%;
 }
 
 table.central {
+    width: 100%;
+    min-height: 500px;
     border-spacing: 14px;
 }
 
 table.news-table {
-    min-height: 900px;
+    min-height: 500px;
     border-spacing: 14px;
 }
 
@@ -120,9 +132,27 @@ td.news-cell-td {
     font-style: italic;
 }
 
+.news-date-edit {
+    width: 100%;
+}
+
+.news-cell-button {
+    font-size: 24px;
+    text-align: right;
+}
+
+.news-cell-button:hover {
+    color: #5B2929;
+}
+
+.news-cell-button::selection {
+    background: transparent;
+}
+
+
 ul.filter-list {
-    margin-bottom: 850px;
-    width: 200%;
+    list-style-type: none;
+    padding-left: 0;
 }
 
 li.filter-element {
@@ -131,8 +161,8 @@ li.filter-element {
 
 .filter {
     border-radius: 4px;
-    width: 100px;
-    margin-right: 30px;
+    width: 130px;
+
 }
 
 .filter:hover {

@@ -30,13 +30,21 @@
     font-size: 25px;
 }
 
-.edit-form {
+.edit-form, .edit-form-summary, .edit-form-content {
     width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
     border: solid black 1px;
     margin-bottom: 7px;
     font-family: "Times New Roman";
-    font-size: 20px
+    font-size: 20px;
+    resize: none;
+}
 
+.edit-form-summary {
+    padding-bottom: 0;
+    margin-bottom: 0px;
 }
 
 .edit-author {
@@ -45,17 +53,56 @@
     color: #A89494;
 }
 
-.edit-form-content {
+.edit-tags-table {
     width: 100%;
-    border: solid black 1px;
-    margin-bottom: 7px;
-    font-family: "Times New Roman";
-    font-size: 20px;
+    border-spacing: 0;
+}
+
+.edit-tags-td {
+    padding: 0 0 0 0;
 }
 
 .edit-tags {
-    font-family: "Helvetica";
+    border-spacing: 0;
+    margin: 0 0 0 0;
+}
+
+.edit-tag-element {
+    border: 1px solid black;
+}
+
+.edit-tag {
     font-size: 20px;
+}
+
+.edit-tags-add {
+    padding: 0 0 0 0;
+}
+
+.edit-tag-input-container {
+    height: 100%;
+}
+
+.edit-tag-input {
+    font-size: 16px;
+    font-family: 'Time Roman';
+}
+
+.tag-text {
+    cursor: default;
+    font-family: serif;
+}
+
+.tag-text::selection {
+    background: transparent;
+}
+
+.tag-remove {
+    cursor: pointer;
+}
+
+.tag-remove::selection {
+    background: transparent;
 }
 
 .edit-bot {
@@ -68,6 +115,7 @@
 }
 
 .edit-bot-right-col {
+    background-color: white;
     cursor: default;
     border: solid black 1px;
     border-radius: 6px;

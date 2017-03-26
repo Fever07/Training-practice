@@ -15,7 +15,30 @@
     font-size: 30px;
 }
 
+.details-author-td {
+    width: 100%;
+}
+
+.details-author-and-buttons {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.details-button {
+    font-size: 30px;
+}
+
+.details-button-text {
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.details-button-text::selection {
+    background: transparent;
+}
+
 .details-author {
+    margin-bottom: 0;
     font-size: 22px;
     font-style: italic;
     color: #A89494;
@@ -32,5 +55,6 @@
 }
 
 .details-date {
-
+    font-family: "Times New Roman";
 }
+

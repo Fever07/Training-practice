@@ -5,6 +5,8 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
     <link rel="stylesheet" type="text/css" href="details-styles.css">
     <link rel="stylesheet" type="text/css" href="edit-styles.css">
+    <link rel="stylesheet" type="text/css" href="minipage-styles.css">
+    <script src="initstorage.js"></script>
     <title>DatNews</title>
 </head>
 <body class="background">
@@ -12,16 +14,14 @@
         <table class="header-table">
             <tr>
                 <td class="left-col">
-                    <div id="header">
-                        <h1 class="margin">
-                            <span class="header">Dat</span>News</h1>
+                    <div class="header-div">
+                        <span class="header-pointer"><span class="header">Dat</span>News</span>
                     </div>
                 </td>
-                <td class="right-col">
+                <td class="right-col" align="right">
                     <table class="top-menu">
                         <tr>
-                            <td class="menu-item">Главная</td>
-                            <td class="menu-item">Выход</td>
+
                         </tr>
                     </table>
                 </td>
@@ -29,72 +29,7 @@
         </table>
         <hr size="2" color="black">
         <div class="feed" id="main">
-
-            <div>
-                <table class="central">
-                    <tr>
-                        <td>
-                            <table class="news-table">
-                                <tr>
-                                    <td class="news-cell-td"></td>
-                                    <td class="news-cell-td"></td>
-                                    <td class="news-cell-td"></td>
-                                </tr>
-                                <tr>
-                                    <td class="news-cell-td"></td>
-                                    <td class="news-cell-td"></td>
-                                    <td class="news-cell-td"></td>
-                                </tr>
-                                <tr>
-                                    <td class="news-cell-td"></td>
-                                    <td class="news-cell-td"></td>
-                                    <td class="news-cell-td"></td>
-                                </tr>
-                            </table>
-                        </td>
-
-                        <td>
-                            <ul class="filter-list">
-                                <li class="filter-element">
-                                    <select class="filter" id="name">
-                                        <option>
-                                            Все авторы
-                                        </option>
-                                    </select>
-                                </li>
-                                <li class="filter-element">
-                                    <select class="filter" id="date">
-                                        <option>
-                                            Дата
-                                        </option>
-                                    </select>
-                                </li>
-                                <li class="filter-element">
-                                    <select class="filter" id="tags">
-                                        <option>
-                                            Все теги
-                                        </option>
-                                    </select>
-                                </li>
-                            </ul>
-                        </td>
-
-
-                    </tr>
-                </table>
-
-            </div>
-
-            <table class="pagination">
-                <tr>
-                    <td><b>1</b></td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>...</td>
-                </tr>
-            </table>
         </div>
-
         <table class="footer">
             <tr>
                 <td>
@@ -111,7 +46,6 @@
             </tr>
         </table>
     </div>
-
 <script src="script.js"></script>
 </body>
 </html>
