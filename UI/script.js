@@ -367,11 +367,17 @@ var viewService = (function () {
                 '                </div>'+
                 '            </div>'+
                 '        </div>');
-            loginWindow.getElementsByClassName('header-pointer-login')[0].addEventListener('click', function () {
-                document.getElementsByClassName('background')[0].removeChild(document.getElementsByClassName('popup-blackout')[0]);
-                newState(previousState);
-            });
             document.getElementsByClassName('background')[0].insertBefore(loginWindow, document.getElementsByClassName('ground')[0]);
+            loginWindow.addEventListener('click', function () {
+                if (event.target.className == 'popup-blackout' || event.target.className == 'header-pointer-login')
+                    document.getElementsByClassName('background')[0].removeChild(document.getElementsByClassName('popup-blackout')[0]);
+            });
+            document.onkeydown = function (event) {
+                if (event.keyCode == 27) {
+                    document.getElementsByClassName('background')[0].removeChild(document.getElementsByClassName('popup-blackout')[0]);
+                    document.onkeydown = null;
+                }
+            };
             loginWindow.getElementsByClassName('menu-item')[0].addEventListener('click', handleLogin);
         }
 
@@ -413,11 +419,18 @@ var viewService = (function () {
                 '            </div>'+
                 '        </div>'
             );
-            submitDeleteWindow.getElementsByClassName('header-pointer-login')[0].addEventListener('click', function () {
-                document.getElementsByClassName('background')[0].removeChild(document.getElementsByClassName('popup-blackout')[0]);
-                newState(previousState);
-            });
+
             document.getElementsByClassName('background')[0].insertBefore(submitDeleteWindow, document.getElementsByClassName('ground')[0]);
+            submitDeleteWindow.addEventListener('click', function () {
+                if (event.target.className == 'popup-blackout' || event.target.className == 'header-pointer-login')
+                    document.getElementsByClassName('background')[0].removeChild(document.getElementsByClassName('popup-blackout')[0]);
+            });
+            document.onkeydown = function (event) {
+                if (event.keyCode == 27) {
+                    document.getElementsByClassName('background')[0].removeChild(document.getElementsByClassName('popup-blackout')[0]);
+                    document.onkeydown = null;
+                }
+            };
             submitDeleteWindow.getElementsByClassName('submit-buttons-table')[0].addEventListener('click', handleSubmit);
 
         }
