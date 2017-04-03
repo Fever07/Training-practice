@@ -570,10 +570,10 @@ var viewService = (function () {
         }
 
         function handleAddTag(event) {
-            var tagInput = document.getElementsByClassName('edit-tag-input')[0]
+            var tagInput = document.getElementsByClassName('edit-tag-input')[0];
             if (tagInput.value != '') {
                 var tagsRow = document.getElementById('edit-tags-row');
-                tagsRow.appendChild(makeElement('td', 'edit-tag-element-container', tagInput.value,
+                var newTag = makeElement('td', 'edit-tag-element-container', tagInput.value,
                     '<div class="edit-tag-element">' +
                     '   <table class="edit-tag-element-table">' +
                     '       <tr id="' + tagInput.value + '">' +
@@ -582,7 +582,9 @@ var viewService = (function () {
                     '       </tr>' +
                     '   </table>' +
                     '</div>'
-                ));
+                );
+                newTag.addEventListener('click', handleRemoveTag);
+                tagsRow.appendChild(newTag);
                 tagInput.value = '';
             }
         }
@@ -600,6 +602,8 @@ var viewService = (function () {
             } else if (currentState == 'details') {
 
             } else if (currentState == 'edit' || currentState == 'add') {
+                document.getElementsByClassName("edit-bot-right-col")[0].addEventListener('click', handleSave);
+                document.getElementsByClassName("edit-bot-right-col")[1].addEventListener('click', handleCancel);
                 document.getElementById('edit-add-tag').addEventListener('click', handleAddTag);
             }
         }
@@ -619,8 +623,6 @@ var viewService = (function () {
                     document.getElementsByClassName("details-button")[1].addEventListener('click', handleRemove);
                 }
             } else if (currentState == 'edit' || currentState == 'add') {
-                document.getElementsByClassName("edit-bot-right-col")[0].addEventListener('click', handleSave);
-                document.getElementsByClassName("edit-bot-right-col")[1].addEventListener('click', handleCancel);
                 Array.prototype.filter.call(document.getElementById('edit-tags-row').getElementsByClassName('edit-tag-element-container'),
                     function (elem) {
                     elem.addEventListener('click', handleRemoveTag);

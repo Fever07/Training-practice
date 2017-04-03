@@ -1,0 +1,23 @@
+{
+  "name": "datnews-server",
+  "version": "1.0.0",
+  "description": "News site server",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fever07/Training-practice.git"
+  },
+  "author": "Dmitry Voynov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Fever07/Training-practice/issues"
+  },
+  "homepage": "https://github.com/Fever07/Training-practice#readme", "dependencies": {
+    "body-parser": "^1.17.1",
+    "diskdb": "^0.1.17",
+    "express": "^4.15.2"
+  }
+}
