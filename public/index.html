@@ -1,15 +1,17 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <link rel="stylesheet" type="text/css" href="details-styles.css">
-    <link rel="stylesheet" type="text/css" href="edit-styles.css">
-    <link rel="stylesheet" type="text/css" href="minipage-styles.css">
-    <script src="initstorage.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles/styles.css">
+    <link rel="stylesheet" type="text/css" href="styles/details-styles.css">
+    <link rel="stylesheet" type="text/css" href="styles/edit-styles.css">
+    <link rel="stylesheet" type="text/css" href="styles/minipage-styles.css">
     <title>DatNews</title>
 </head>
 <body class="background">
+
+    <!--CONST-->
+
     <div class="ground" align="center">
         <table class="header-table">
             <tr>
@@ -21,7 +23,6 @@
                 <td class="right-col" align="right">
                     <table class="top-menu">
                         <tr>
-
                         </tr>
                     </table>
                 </td>
@@ -46,6 +47,250 @@
             </tr>
         </table>
     </div>
-<script src="script.js"></script>
+
+    <!--STATIC TEMPLATES-->
+
+    <template id="feed-div-main">
+        <div class="feed" id="main">
+            <table class="central">
+                <tr>
+                    <td class="left-panel"></td>
+                    <td>
+                        <table class="news-table">
+                            <tr>
+                                <td class="news-cell-td"></td>
+                                <td class="news-cell-td"></td>
+                                <td class="news-cell-td"></td>
+                            </tr>
+                            <tr>
+                                <td class="news-cell-td"></td>
+                                <td class="news-cell-td"></td>
+                                <td class="news-cell-td"></td>
+                            </tr>
+                            <tr>
+                                <td class="news-cell-td"></td>
+                                <td class="news-cell-td"></td>
+                                <td class="news-cell-td"></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="right-panel">
+                        <ul class="filter-list">
+                            <li class="filter-element">
+                                <select class="filter" id="name-filter">
+                                    <option id="all-authors">Все авторы</option>
+                                </select>
+                            </li>
+                            <li class="filter-element">
+                                <select class="filter" id="tags-filter">
+                                    <option id="all-tags">Все теги</option>
+                                </select>
+                            </li>
+                            <li class="filter-element">
+                                <input type="date" class="filter" min="2017-01-01" max="2025-01-01" id="date-from-filter">
+                            </li>
+                            <li class="filter-element">
+                                <input type="date" class="filter" min="2017-01-01" max="2025-01-01" id="date-to-filter">
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+            <table class="pagination">
+                <tr>
+                </tr>
+            </table>
+        </div>
+    </template>
+
+    <template id="details-div-main">
+        <div class="details-central" id="main">
+            <div class="details-title">
+            </div>
+            <table class="details-author-and-buttons">
+                <tr>
+                    <td class="details-author-td">
+                        <div class="details-author">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class="details-author">
+            </div>
+            <hr size="2" color="black">
+            <div class="details-content">
+            </div>
+            <div class="details-tags">
+            </div>
+            <div class="details-date">
+            </div>
+        </div>
+    </template>
+
+    <template id="edit-add-div-main">
+        <div class="edit-central" id="main">
+            <div class="edit-top">
+                <table class="edit-central-table">
+                    <tr class="edit-top">
+                        <td class="edit-top-left-col">
+                            Добавить / Редактировать новость
+                        </td>
+                        <td class="edit-top-right-col">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <form>
+                    <input class="edit-form" type="text" placeholder="Заголовок..." maxlength="100" id="title">
+                </form>
+            </div>
+            <div>
+                <form>
+                    <textarea class="edit-form-summary" placeholder="Краткое описание..." maxlength="200" id="summary"></textarea>
+                </form>
+            </div>
+            <div>
+                <table class="edit-tags-table">
+                    <tr>
+                        <td class="edit-tags-td" align="left">
+                            <table class="edit-tags">
+                                <tr id="edit-tags-row">
+                                </tr>
+                            </table>
+                        </td>
+                        <td class="edit-tags-add" align="right">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <div class="edit-tag-input-container" align="right">
+                                            <input type="text" class="edit-tag-input">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <button id="edit-add-tag">+</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <form>
+                    <textarea class="edit-form-content" placeholder="Текст..." rows="10" id="content"></textarea>
+                </form>
+            </div>
+            <div class="edit-bot">
+                <table class="edit-central-table">
+                    <tr>
+                        <td class="edit-bot-left-col">
+                        </td>
+                        <td class="edit-bot-right-col">
+                            Сохранить
+                        </td>
+                        <td class="edit-bot-right-col">
+                            Отмена
+                        </td>
+                    </tr>
+                </table>
+            </div>
+       </div>
+    </template>
+
+    <template id="login-window">
+        <div class="popup-blackout">
+            <div class="popup-window-login">
+                <div class="login-header">
+                    <span class="header-pointer-login"><span class="header">Dat</span>News</span>
+                </div>
+                <div>
+                    <div class="login-text">
+                        Логин:
+                    </div>
+                    <input type="text" class="login-input" id="login">
+                    <div class="login-text">
+                        Пароль:
+                    </div>
+                    <input type="password" class="login-input" id="password">
+                    <div class="login-incorrect-message">
+                    </div>
+                    <div class="menu-item-container">
+                        <div class="menu-item">
+                            Вход
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="submit-delete-window">
+        <div class="popup-blackout">
+            <div class="popup-window-submit">
+                <div class="login-header">
+                    <span class="header-pointer-login"><span class="header">Dat</span>News</span>
+                </div>
+                <div>
+                    <div class="submit-question">
+                        Удалить эту новость?
+                    </div>
+                    <table class="submit-buttons-table" align="center">
+                        <tr>
+                            <td class="menu-item">
+                                <div class="submit-button">Да</div>
+                            </td>
+                            <td class="menu-item">
+                                <div class="submit-button">Нет</div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!--DYNAMIC TEMPLATES-->
+
+    <template id="template-news-cell">
+        <div class="news-cell">
+            <span class="news-title"></span>
+            <br>
+            <span class="news-author"></span>
+            <hr size="2" color="white">
+            <span class="news-text"></span>
+            <br>
+            <br>
+            <span class="news-tags-row"></span>
+            <hr size="1" color="lightgray">
+            <table class="news-date-edit">
+                <tr>
+                    <td class="news-date"></td>
+                </tr>
+            </table>
+        </div>
+    </template>
+
+    <template id="template-edit-tag">
+        <td class="edit-tag-element-container">
+            <div class="edit-tag-element">
+               <table class="edit-tag-element-table">
+                   <tr>
+                       <td class="tag-text"></td>
+                       <td class="tag-remove">✖</td>
+                   </tr>
+               </table>
+            </div>
+        </td>
+    </template>
+
+    <script src="scripts/initstorage.js"></script>
+    <script src="scripts/prototype.js"></script>
+    <script src="scripts/articleBaseService.js"></script>
+    <script src="scripts/accountsDatabase.js"></script>
+    <script src="scripts/viewService.js"></script>
+    <script src="scripts/script.js"></script>
 </body>
 </html>

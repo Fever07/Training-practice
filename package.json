@@ -1,6 +1,6 @@
 {
   "name": "datnews-server",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "News site server",
   "main": "app.js",
   "scripts": {

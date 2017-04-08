@@ -1,4 +1,4 @@
-var articles = [
+﻿var articles = [
     {
         id: '1',
         title: 'В Минске девушка не пропустила скорую, в результате столкнулись три авто',
@@ -195,11 +195,14 @@ if (!localStorage.getItem('IFSET')) {
     localStorage.setItem('articles', JSON.stringify(articles));
     localStorage.setItem('users', JSON.stringify(users));
     localStorage.setItem('tags', JSON.stringify(tags));
+    var currentConfiguration = {
+        previousState: 'feed',
+        currentState: 'feed',
+        currentUser: '',
+        currentFilter: '',
+        currentPage: 1,
+        currentArticle: null
+    };
+    localStorage.setItem('currentConfiguration', JSON.stringify(currentConfiguration));
     localStorage.setItem('IFSET', 'true');
-    localStorage.setItem("previousState", 'feed');
-    localStorage.setItem("currentState", 'feed');
-    localStorage.setItem("currentUser", '');
-    localStorage.setItem("currentFilter", JSON.stringify({}));
-    localStorage.setItem("currentPage", JSON.stringify(1));
-    localStorage.setItem("currentArticle", JSON.stringify(null));
 }
