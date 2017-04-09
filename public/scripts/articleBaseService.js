@@ -1,33 +1,55 @@
 articlesBaseService = (function () {
 
-    function setToLocalStorage(ifArticles, ifTags, ifUsers) {
-        if (ifArticles)
-            localStorage.setItem("articles", JSON.stringify(articles));
-        if (ifTags)
-            localStorage.setItem("tags", JSON.stringify(tags));
-        if (ifUsers)
-            localStorage.setItem("users", JSON.stringify(users));
-    }
+    (function getFromDatabase() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/articles', false);
+        xhr.send();
+        if (xhr.status == 200)
+            articles = JSON.parse(xhr.responseText, function (key, value) {
+                if (key == 'createdAt') return new Date(value);
+                return value;
+            })
 
-    (function getFromLocalStorage(ifArticles, ifTags, ifUsers) {
-        if (ifArticles)
-            articles = JSON.parse(localStorage.getItem('articles'), function (key, value) {
-                if (key == "createdAt")
-                    return new Date(value);
-                else
-                    return value;
-            });
-        if (ifTags)
-            tags = JSON.parse(localStorage.getItem('tags'));
-        if (ifUsers)
-            users = JSON.parse(localStorage.getItem('users'));
-    }(1, 1, 1));
+        xhr.open('GET', '/tags', false);
+        xhr.send();
+        if (xhr.status == 200) {
+            tags = JSON.parse(xhr.responseText);
+            tags.sort();
+        }
+
+        xhr.open('GET', '/users', false);
+        xhr.send();
+        if (xhr.status == 200) {
+            users = JSON.parse(xhr.responseText);
+            users.sort();
+        }
+
+    }());
+
+    function setToDatabase(ifArticles, ifTags, ifUsers) {
+        var xhr = new XMLHttpRequest();
+        if (ifArticles) {
+            xhr.open('POST', '/articles', true);
+            xhr.setRequestHeader('content-type', 'application/json');
+            xhr.send(JSON.stringify(articles));
+        }
+        if (ifTags) {
+            xhr.open('POST', '/tags', true);
+            xhr.setRequestHeader('content-type', 'application/json');
+            xhr.send(JSON.stringify(tags));
+        }
+        if (ifUsers) {
+            xhr.open('POST', '/users', true);
+            xhr.setRequestHeader('content-type', 'application/json');
+            xhr.send(JSON.stringify(users));
+        }
+    }
 
     function addTag(tag) {
         if (tags.indexOf(tag) === -1) {
             tags.push(tag);
             tags.sort();
-            setToLocalStorage(0, 1, 0);
+            setToDatabase(0, 1, 0);
             return true;
         } else
             return false;
@@ -37,7 +59,7 @@ articlesBaseService = (function () {
         var fnd = article.tags.indexOf(tag);
         if (fnd != -1) {
             article.tags.splice(fnd, 1);
-            setToLocalStorage(1, 0, 0);
+            setToDatabase(1, 0, 0);
             return true;
         } else
             return false;
@@ -52,7 +74,7 @@ articlesBaseService = (function () {
 
     function isSatisfyingFilter(article, filter) {
         var ans = true;
-        if (typeof filter != 'undefined') {
+        if (filter) {
             if (typeof filter.author === 'string')
                 if (article.author != filter.author)
                     ans = false;
@@ -84,7 +106,7 @@ articlesBaseService = (function () {
     function getArticles(skip, top, filter) {
         var filteredArticles = articles.filter(function (article) {
             var ans = true;
-            if (typeof filter != 'undefined') {
+            if (filter) {
                 if (filter.author && filter.author != article.author)
                     ans = false;
                 if (filter.dateFrom && article.createdAt < filter.dateFrom)
@@ -133,7 +155,7 @@ articlesBaseService = (function () {
                 }
             );
             articles.sort(compareDate);
-            setToLocalStorage(1, 1, 0);
+            setToDatabase(1, 1, 0);
             return true;
         } else
             return false;
@@ -163,13 +185,13 @@ articlesBaseService = (function () {
                     addTag(item);
                 }
             );
-            setToLocalStorage(1, 1, 0);
+            setToDatabase(1, 1, 0);
         }
     }
 
     function removeArticle(id) {
         articles.splice(articles.indexOf(getArticle(id)), 1);
-        setToLocalStorage(1, 0, 0);
+        setToDatabase(1, 0, 0);
     }
 
     return {

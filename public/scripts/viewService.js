@@ -1,9 +1,30 @@
 viewService = (function () {
     const ROWS = 3, COLUMNS = 3;
     const states = ['feed', 'details', 'edit', 'add', 'login', 'submit', 'error'];
-    var currentConfiguration;
+    currentConfiguration;
 
-    function setToLocalStorage() {
+    function getFromDatabase() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/currconfig', false);
+        xhr.send();
+        if (xhr.status == 200)
+            currentConfiguration = JSON.parse(xhr.responseText, function (key, value) {
+                if (key == "dateFrom" || key == "dateTo" || key == "createdAt")
+                    return new Date(value);
+                if (key == "currentPage")
+                    return parseInt(value);
+                return value
+            })[0];
+    };
+
+    function setToDatabase() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/currconfig', true);
+        xhr.setRequestHeader('content-type', 'application/json');
+        xhr.send(JSON.stringify(currentConfiguration));
+    }
+
+    /*function setToDatabase() {
         localStorage.setItem("currentConfiguration", JSON.stringify(currentConfiguration));
     }
 
@@ -15,20 +36,19 @@ viewService = (function () {
                 return parseInt(value);
             return value;
         });
-    }());
+    }());*/
 
     function newState(newState, param) {
         currentConfiguration.previousState = currentConfiguration.currentState;
         currentConfiguration.currentState = newState;
         if (currentConfiguration.currentState == 'feed') {
-            currentConfiguration.currentFilter = {};
             if (param)
                 currentConfiguration.currentPage = param;
         } else if (currentConfiguration.currentState == 'details' || currentConfiguration.currentState == 'edit') {
             if (param)
                 currentConfiguration.currentArticle = param;
         }
-        setToLocalStorage();
+        setToDatabase();
     }
 
     function dateToString(date) {
@@ -74,6 +94,8 @@ viewService = (function () {
     }
 
     function init() {
+        getFromDatabase();
+        console.log(currentConfiguration);
         updateMenu();
         setterOfListeners.setMenuListeners();
         updateUI();
@@ -87,8 +109,9 @@ viewService = (function () {
                 var account = accountsDatabase.getAccount(document.getElementById('login').value, document.getElementById('password').value);
                 if (account) {
                     currentConfiguration.currentUser = account.username;
-                    setToLocalStorage();
+                    setToDatabase();
                     document.getElementsByClassName('background')[0].removeChild(document.getElementsByClassName('popup-blackout')[0]);
+                    document.onkeydown = null;
                     newState('feed');
                     updateMenu();
                     updateUI();
@@ -107,6 +130,8 @@ viewService = (function () {
                 if (event.keyCode == 27) {
                     document.getElementsByClassName('background')[0].removeChild(document.getElementsByClassName('popup-blackout')[0]);
                     document.onkeydown = null;
+                } else if (event.keyCode == 13) {
+                    handleLogin(event);
                 }
             };
             loginWindow.getElementsByClassName('menu-item')[0].addEventListener('click', handleLogin);
@@ -155,7 +180,7 @@ viewService = (function () {
                 showLoginWindow();
             } else if (event.target.innerHTML == 'Выход') {
                 currentConfiguration.currentUser = '';
-                setToLocalStorage();
+                setToDatabase();
                 newState('feed', 1);
                 updateMenu();
                 updateUI();
@@ -163,13 +188,17 @@ viewService = (function () {
         }
 
         function handleFilter(event) {
+
+            const minDate = '2015-01-01';
+            const maxDate = '2025-01-01';
+
             if (event.target.id == 'name-filter') {
                 if (event.target.value == 'Все авторы')
                     currentConfiguration.currentFilter.author = null;
                 else
                     currentConfiguration.currentFilter.author = event.target.value;
                 currentConfiguration.currentPage = 1;
-                setToLocalStorage();
+                setToDatabase();
                 updateDynamic();
             } else if (event.target.id == 'tags-filter') {
                 if (event.target.value == 'Все теги')
@@ -177,17 +206,31 @@ viewService = (function () {
                 else
                     currentConfiguration.currentFilter.tags = [event.target.value];
                 currentConfiguration.currentPage = 1;
-                setToLocalStorage();
+                setToDatabase();
                 updateDynamic();
             } else if (event.target.id == 'date-from-filter') {
-                currentConfiguration.currentFilter.dateFrom = new Date(event.target.value);
-                currentConfiguration.currentPage = 1;
-                setToLocalStorage();
+                if (event.target.value != '' && event.target.value >= minDate) {
+                    currentConfiguration.currentFilter.dateFrom = new Date(event.target.value);
+                    currentConfiguration.currentPage = 1;
+                } else {
+                    currentConfiguration.currentFilter.dateFrom = new Date(minDate);
+                    currentConfiguration.currentPage = 1;
+                }
+                console.log(event.target.value);
+                console.log(currentConfiguration.currentFilter.dateFrom);
+                setToDatabase();
                 updateDynamic();
             } else if (event.target.id == 'date-to-filter') {
-                currentConfiguration.currentFilter.dateTo = new Date(event.target.value);
-                currentConfiguration.currentPage = 1;
-                setToLocalStorage();
+                if (event.target.value != '' && event.target.value <= maxDate) {
+                    currentConfiguration.currentFilter.dateTo = new Date(event.target.value);
+                    currentConfiguration.currentPage = 1;
+                } else {
+                    currentConfiguration.currentFilter.dateTo = new Date(maxDate);
+                    currentConfiguration.currentPage = 1;
+                }
+                console.log(event.target.value);
+                console.log(currentConfiguration.currentFilter.dateTo);
+                setToDatabase();
                 updateDynamic();
             }
         }
@@ -216,7 +259,6 @@ viewService = (function () {
                 else
                     showSubmitDeleteWindow(event.currentTarget.id);
             }
-
         }
 
         function handleSave() {
@@ -265,7 +307,7 @@ viewService = (function () {
         function handlePagination() {
             if (event.target.className == 'pagination-elem') {
                 currentConfiguration.currentPage = parseInt(event.target.id);
-                setToLocalStorage();
+                setToDatabase();
                 updateDynamic();
             }
         }
@@ -349,7 +391,6 @@ viewService = (function () {
         if (currentConfiguration.currentState == 'feed') {
             divMain = document.querySelector("#feed-div-main").content.querySelector("div").cloneNode(true);
             document.getElementsByClassName('ground')[0].insertBefore(divMain, document.getElementsByClassName('footer')[0]);
-            setToLocalStorage();
             var selectUsers = document.getElementById('name-filter');
             articlesBaseService.users.forEach(function (user, i) {
                 selectUsers.appendChild(makeElement('option', '', i, user));
@@ -498,7 +539,6 @@ viewService = (function () {
             document.getElementsByClassName('edit-bot-left-col')[0].innerHTML = currentConfiguration.currentUser + ', ' + dateToString(new Date());
         }
         setterOfListeners.setDynamicListeners();
-        setToLocalStorage();
     }
 
     return {

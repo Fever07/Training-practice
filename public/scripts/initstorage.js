@@ -190,8 +190,9 @@ articles.sort(function compareDate(a, b) {
     else
         return 1;
 });
+var currentConfiguration;
 
-if (!localStorage.getItem('IFSET')) {
+/*if (!localStorage.getItem('IFSET')) {
     localStorage.setItem('articles', JSON.stringify(articles));
     localStorage.setItem('users', JSON.stringify(users));
     localStorage.setItem('tags', JSON.stringify(tags));
@@ -203,6 +204,8 @@ if (!localStorage.getItem('IFSET')) {
         currentPage: 1,
         currentArticle: null
     };
+    console.log(JSON.stringify(currentConfiguration));
     localStorage.setItem('currentConfiguration', JSON.stringify(currentConfiguration));
     localStorage.setItem('IFSET', 'true');
-}
+}*/
+
