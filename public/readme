@@ -1,16 +1,16 @@
-Now its full dynamic version, working with localStorage.
+Now its full dynamic version, working with filesystem db.
 Accounts to login:
 
  login: 'Vanvan'
  password: '123456'
- --username: 'Иван Иванов'
+ --username: 'Г€ГўГ Г­ Г€ГўГ Г­Г®Гў'
 
  login: 'Nikoma'
  password: '1234567'
- --username: 'Николай Малышев'
+ --username: 'ГЌГЁГЄГ®Г«Г Г© ГЊГ Г«Г»ГёГҐГў'
 
  login: 'Tanyusha'
  password: '777ppxx'
- --username: 'Татьяна Терентьева'
+ --username: 'Г’Г ГІГјГїГ­Г  Г’ГҐГ°ГҐГ­ГІГјГҐГўГ '
 
 (all textfields are case-sensitive!)
