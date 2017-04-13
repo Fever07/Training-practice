@@ -1,3 +1,3 @@
-var articleBaseService;
+var articlesBaseService;
 var accountsDatabase;
 var viewService;

@@ -1,7 +1,7 @@
 viewService = (function () {
     const ROWS = 3, COLUMNS = 3;
     const states = ['feed', 'details', 'edit', 'add', 'login', 'submit', 'error'];
-    currentConfiguration;
+    var currentConfiguration;
 
     function getFromDatabase() {
         var xhr = new XMLHttpRequest();
@@ -142,7 +142,7 @@ viewService = (function () {
             function handleSubmit(event) {
                 if (event.target.className == 'submit-button') {
                     if (event.target.innerHTML == 'Да') {
-                        articlesBaseService.removeArticle(id);
+                        articlesBaseService._mapremoveArticle(id);
                         document.getElementsByClassName('background')[0].removeChild(document.getElementsByClassName('popup-blackout')[0]);
                         newState('feed');
                         updateUI();
@@ -237,7 +237,7 @@ viewService = (function () {
 
         function handleDetails(event) {
             if (event.target.id != 'edit' && event.target.id != 'remove') {
-                newState('details', articlesBaseService.getArticle(this.id));
+                newState('details', articlesBaseService._mapgetArticle(this.id));
                 updateUI();
             }
         }
@@ -245,7 +245,7 @@ viewService = (function () {
         function handleEdit(event) {
             if (event.target.id == 'edit') {
                 if (currentConfiguration.currentState == 'feed')
-                    newState('edit', articlesBaseService.getArticle(event.currentTarget.id));
+                    newState('edit', articlesBaseService._mapgetArticle(event.currentTarget.id));
                 else
                     newState('edit');
                 updateUI();
@@ -279,11 +279,11 @@ viewService = (function () {
                     tempTags.push(tagNode.id);
                 });
                 articleChanged.tags = tempTags;
-                articlesBaseService.editArticle(currentConfiguration.currentArticle, articleChanged);
+                articlesBaseService._mapeditArticle(currentConfiguration.currentArticle, articleChanged);
                 newState(currentConfiguration.previousState);
                 updateUI();
             } else {
-                currentConfiguration.currentArticle = articlesBaseService.createEmptyArticle();
+                currentConfiguration.currentArticle = articlesBaseService.createEmptyArticle(currentConfiguration.currentUser[0]);
                 currentConfiguration.currentArticle.title = document.getElementById('title').value;
                 currentConfiguration.currentArticle.summary = document.getElementById('summary').value;
                 currentConfiguration.currentArticle.content = document.getElementById('content').value;
@@ -293,7 +293,7 @@ viewService = (function () {
                 });
                 currentConfiguration.currentArticle.tags = tempTags;
                 currentConfiguration.currentArticle.author = currentConfiguration.currentUser;
-                articlesBaseService.addArticle(currentConfiguration.currentArticle);
+                articlesBaseService._mapaddArticle(currentConfiguration.currentArticle);
                 newState('feed');
                 updateUI();
             }
@@ -392,11 +392,11 @@ viewService = (function () {
             divMain = document.querySelector("#feed-div-main").content.querySelector("div").cloneNode(true);
             document.getElementsByClassName('ground')[0].insertBefore(divMain, document.getElementsByClassName('footer')[0]);
             var selectUsers = document.getElementById('name-filter');
-            articlesBaseService.users.forEach(function (user, i) {
+            articlesBaseService.getAllAuthors().forEach(function (user, i) {
                 selectUsers.appendChild(makeElement('option', '', i, user));
             });
             var selectTags = document.getElementById('tags-filter');
-            articlesBaseService.tags.forEach(function (tag, i) {
+            articlesBaseService.getAllTags().forEach(function (tag, i) {
                 selectTags.appendChild(makeElement('option', '', i, tag));
             });
         } else if (currentConfiguration.currentState == 'details') {
@@ -411,7 +411,7 @@ viewService = (function () {
 
     function updateDynamic() {
         if (currentConfiguration.currentState == 'feed') {
-            var currentArticlesList = articlesBaseService.getArticles(0, articlesBaseService.articles.length, currentConfiguration.currentFilter);
+            var currentArticlesList = articlesBaseService._mapgetArticles(0, articlesBaseService.getArticlesNumber(), currentConfiguration.currentFilter);
             var currentNumOfPages = (currentArticlesList.length + 8) / 9 | 0;
             var currentShownArticlesList = currentArticlesList.slice((currentConfiguration.currentPage - 1) * 9, currentConfiguration.currentPage * 9);
             var newsTable = document.getElementsByClassName("news-table")[0];
@@ -535,7 +535,7 @@ viewService = (function () {
             document.getElementsByClassName('edit-tags')[0].firstElementChild.appendChild(tagsRow);
             document.getElementById('content').value = currentConfiguration.currentArticle.content;
         } else if (currentConfiguration.currentState == 'add') {
-            document.getElementsByClassName('edit-top-right-col')[0].innerHTML = 'ID: ' + articlesBaseService.articles.length;
+            document.getElementsByClassName('edit-top-right-col')[0].innerHTML = 'ID: ' + articlesBaseService.createID(currentConfiguration.currentUser[0]);
             document.getElementsByClassName('edit-bot-left-col')[0].innerHTML = currentConfiguration.currentUser + ', ' + dateToString(new Date());
         }
         setterOfListeners.setDynamicListeners();
