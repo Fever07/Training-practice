@@ -1,6 +1,22 @@
 {
-    "extends": "airbnb-base",
-    "plugins": [
-        "import"
-    ]
+	"extends": "airbnb-base",
+	"rules": {
+		"linebreak-style": ["warn", "windows"],
+		"indent": ["error", 4],
+		"no-use-before-define": ["error", { "variables": false }],
+		"no-param-reassign": ["error", { "props": false }],
+		"curly": "off",
+		"no-plusplus": "off",
+		"no-use-before-define": "off",
+		"func-names": "off",
+		"padded-blocks": "off",
+		"max-len": "off"
+	},
+	"globals": {
+		"articlesBaseService": false,
+		"viewService": false,
+		"accountsDatabase": false,
+		"XMLHttpRequest": false,
+		"document": false
+	} 
 }
