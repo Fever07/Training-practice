@@ -13,9 +13,10 @@
 		"max-len": "off"
 	},
 	"globals": {
-		"articlesBaseService": false,
-		"viewService": false,
 		"accountsDatabase": false,
+		"articlesBaseService": false,
+		"httpService": false,
+		"viewService": false,
 		"XMLHttpRequest": false,
 		"document": false
 	} 

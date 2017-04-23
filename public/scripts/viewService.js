@@ -1,25 +1,13 @@
 viewService = (function () {
     let currentConfiguration;
 
-    function getFromDatabase() {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', '/currconfig', false);
-        xhr.send();
-        if (xhr.status === 200)
-            currentConfiguration = JSON.parse(xhr.responseText, (key, value) => {
-                if (key === 'dateFrom' || key === 'dateTo' || key === 'createdAt')
-                    return new Date(value);
-                if (key === 'currentPage')
-                    return parseInt(value, 10);
-                return value;
-            })[0];
-    }
-
     function setToDatabase() {
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/currconfig', true);
-        xhr.setRequestHeader('content-type', 'application/json');
-        xhr.send(JSON.stringify(currentConfiguration));
+        httpService.makeRequest('POST', '/currconfig', JSON.stringify(currentConfiguration))
+            .then((result) => {
+
+            }, (error) => {
+                console.log(error);
+            });
     }
 
     function newState(newst, param) {
@@ -92,10 +80,21 @@ viewService = (function () {
     }
 
     function init() {
-        getFromDatabase();
-        updateMenu();
-        setterOfListeners.setMenuListeners();
-        updateUI();
+        httpService.makeRequest('GET', '/currconfig')
+            .then((result) => {
+                currentConfiguration = JSON.parse(result, (key, value) => {
+                    if (key === 'dateFrom' || key === 'dateTo' || key === 'createdAt')
+                        return new Date(value);
+                    if (key === 'currentPage')
+                        return parseInt(value, 10);
+                    return value;
+                })[0];
+                updateMenu();
+                setterOfListeners.setMenuListeners();
+                updateUI();
+            }, (error) => {
+                console.log(error);
+            });
     }
 
     const setterOfListeners = (function () {

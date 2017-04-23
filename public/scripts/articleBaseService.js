@@ -70,30 +70,33 @@ articlesBaseService = (function () {
         return ret;
     }
 
-    (function getFromDatabase() {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', '/articlesMap', false);
-        xhr.send();
-        if (xhr.status === 200) {
-            const data = JSON.parse(xhr.responseText, (key, value) => {
-                if (key !== '_id') {
-                    if (key === 'createdAt') return new Date(value);
-                    return value;
-                }
-            })[0];
-            for (let id in data) {
-                if (id !== '_id') {
-                    articlesMap.insert(id, data[id]);
-                }
-            }
-        }
-    }());
-
     function setToDatabase() {
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/articlesMap', false);
-        xhr.setRequestHeader('content-type', 'application/json');
-        xhr.send(JSON.stringify(articlesMap.data));
+        httpService.makeRequest('POST', '/articlesMap', JSON.stringify(articlesMap.data))
+            .then((result) => {
+
+            }, (error) => {
+                console.log(error);
+            });
+    }
+
+    function init() {
+        httpService.makeRequest('GET', '/articlesMap')
+            .then((result) => {
+                const data = JSON.parse(result, function (key, value) {
+                    if (key !== '_id') {
+                        if (key === 'createdAt') return new Date(value);
+                        return value;
+                    }
+                })[0];
+                for (let id in data) {
+                    if (id !== '_id') {
+                        articlesMap.insert(id, data[id]);
+                    }
+                }
+                viewService.init();
+            }, (error) => {
+                console.log(error);
+            });
     }
 
     function validateArticle(article) {
@@ -203,5 +206,8 @@ articlesBaseService = (function () {
         getByIds,
         getArticlesNumber,
         createID,
+        init,
     };
 }());
+
+

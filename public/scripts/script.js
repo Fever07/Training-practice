@@ -1,1 +1,1 @@
-﻿viewService.init();
+﻿articlesBaseService.init();
