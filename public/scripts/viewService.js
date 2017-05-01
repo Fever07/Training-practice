@@ -372,6 +372,15 @@ viewService = (function () {
 
     function updateUI() {
         updateStatic();
+
+        /*articlesBaseService.new_getArticles(
+            (currentConfiguration.currentPage - 1) * 9, currentConfiguration.currentPage * 9, currentConfiguration.currentFilter)
+            .then((result) => {
+                updateDynamic(result);
+            }, (error) => {
+                console.log('ERRR' + error);
+            });*/
+
         updateDynamic();
     }
 
@@ -399,11 +408,15 @@ viewService = (function () {
         setterOfListeners.setStaticListeners();
     }
 
-    function updateDynamic() {
+    function updateDynamic(param) {
         if (currentConfiguration.currentState === 'feed') {
             const currentArticlesList = articlesBaseService.getArticles(0, articlesBaseService.getArticlesNumber(), currentConfiguration.currentFilter);
             const currentNumOfPages = (currentArticlesList.length + 8) / 9 | 0;
             const currentShownArticlesList = currentArticlesList.slice((currentConfiguration.currentPage - 1) * 9, currentConfiguration.currentPage * 9);
+
+            /*const currentShownArticlesList = param[0];
+            const currentNumOfPages = param[1];*/
+
             const newsTable = document.getElementsByClassName('news-table')[0];
             let row = newsTable.firstElementChild.firstElementChild;
             let td = row.firstElementChild;
@@ -417,7 +430,7 @@ viewService = (function () {
                 if (row !== null)
                     td = row.firstElementChild;
             }
-            if (currentArticlesList.length > 0) {
+            if (currentShownArticlesList.length > 0) {
                 row = newsTable.firstElementChild.firstElementChild;
                 td = row.firstElementChild;
                 currentShownArticlesList.forEach((article) => {

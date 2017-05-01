@@ -77,6 +77,24 @@ articlesBaseService = (function () {
             }, (error) => {
                 console.log(error);
             });
+        httpService.makeRequest('POST', '/authorIndex', JSON.stringify(authorIndex));
+        httpService.makeRequest('POST', '/tagsIndex', JSON.stringify(authorIndex));
+    }
+
+    function new_getArticles(skip, top, filter) {
+        return new Promise((resolve, reject) => {
+            const req = {
+                'skip': skip,
+                'top': top,
+                'filter': filter,
+            };
+            httpService.makeRequest('POST', '/articlesMapGet', JSON.stringify(req))
+                .then((result) => {
+                    resolve(result);
+                }, (error) => {
+                    reject(error);
+                });
+        });
     }
 
     function init() {
@@ -207,6 +225,7 @@ articlesBaseService = (function () {
         getArticlesNumber,
         createID,
         init,
+        new_getArticles,
     };
 }());
 
