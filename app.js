@@ -123,8 +123,9 @@ app.post('/articlesMapGet', (req, res) => {
         ids = authorIndex[filter.author];
         usedFilter = 'author';
     } else
-        for (let key in Object.keys(data))
-            ids.push(key);
+        for (let key in data)
+            if (key != '_id')
+                ids.push(key);
     let articles = [];
     ids.forEach((id) => {
         articles.push(data[id]);
@@ -160,11 +161,11 @@ app.post('/articlesMapGet', (req, res) => {
             return -1;
         return 1;
     });
-    console.log(articles.length);
+
     const ret = [];
     ret.push(articles.slice(req.body.skip, req.body.top));
     ret.push(articles.length);
-    res.json(ret);
+    res.send(JSON.stringify(ret));
 });
 
 app.post('/articlesMap', (req, res) => {

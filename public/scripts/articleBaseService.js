@@ -90,7 +90,16 @@ articlesBaseService = (function () {
             };
             httpService.makeRequest('POST', '/articlesMapGet', JSON.stringify(req))
                 .then((result) => {
-                    resolve(result);
+                    const parsedResult = JSON.parse(result, (key, value) => {
+                        if (key === 'createdAt') return new Date(value);
+                        return value;
+                    });
+                    const articlesData = parsedResult[0];
+                    const numOfFilteredArticles = parsedResult[1];
+                    const ret = [];
+                    ret.push(articlesData);
+                    ret.push(numOfFilteredArticles);
+                    resolve(ret);
                 }, (error) => {
                     reject(error);
                 });

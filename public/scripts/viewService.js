@@ -1,4 +1,7 @@
 viewService = (function () {
+
+    const PAGES = 9;
+
     let currentConfiguration;
 
     function setToDatabase() {
@@ -299,7 +302,13 @@ viewService = (function () {
             if (event.target.className === 'pagination-elem') {
                 currentConfiguration.currentPage = parseInt(event.target.id, 10);
                 setToDatabase();
-                updateDynamic();
+                articlesBaseService.new_getArticles(
+                    (currentConfiguration.currentPage - 1) * PAGES, currentConfiguration.currentPage * PAGES, currentConfiguration.currentFilter)
+                    .then((result) => {
+                        updateDynamic(result);
+                    }, (error) => {
+                        console.log('ERRR' + error);
+                    });
             }
         }
 
@@ -372,16 +381,13 @@ viewService = (function () {
 
     function updateUI() {
         updateStatic();
-
-        /*articlesBaseService.new_getArticles(
-            (currentConfiguration.currentPage - 1) * 9, currentConfiguration.currentPage * 9, currentConfiguration.currentFilter)
+        articlesBaseService.new_getArticles(
+            (currentConfiguration.currentPage - 1) * PAGES, currentConfiguration.currentPage * PAGES, currentConfiguration.currentFilter)
             .then((result) => {
                 updateDynamic(result);
             }, (error) => {
                 console.log('ERRR' + error);
-            });*/
-
-        updateDynamic();
+            });
     }
 
     function updateStatic() {
@@ -410,16 +416,12 @@ viewService = (function () {
 
     function updateDynamic(param) {
         if (currentConfiguration.currentState === 'feed') {
-            const currentArticlesList = articlesBaseService.getArticles(0, articlesBaseService.getArticlesNumber(), currentConfiguration.currentFilter);
-            const currentNumOfPages = (currentArticlesList.length + 8) / 9 | 0;
-            const currentShownArticlesList = currentArticlesList.slice((currentConfiguration.currentPage - 1) * 9, currentConfiguration.currentPage * 9);
-
-            /*const currentShownArticlesList = param[0];
-            const currentNumOfPages = param[1];*/
-
+            const currentShownArticlesList = param[0];
+            const currentNumOfPages = (param[1] + (PAGES - 1)) / PAGES | 0;
             const newsTable = document.getElementsByClassName('news-table')[0];
             let row = newsTable.firstElementChild.firstElementChild;
             let td = row.firstElementChild;
+
             while (row !== null) {
                 while (td !== null) {
                     if (td.firstElementChild !== null)
