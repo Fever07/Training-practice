@@ -1,0 +1,18 @@
+{ 
+    "_id" : ObjectId("590daca922277818100713fe"), 
+    "login" : "Vanvan", 
+    "password" : "123456", 
+    "username" : "Иван Иванов"
+}
+{ 
+    "_id" : ObjectId("590daca922277818100713ff"), 
+    "login" : "Nikoma", 
+    "password" : "1234567", 
+    "username" : "Николай Малышев"
+}
+{ 
+    "_id" : ObjectId("590daca92227781810071400"), 
+    "login" : "Tanyusha", 
+    "password" : "777ppxx", 
+    "username" : "Татьяна Терентьева"
+}

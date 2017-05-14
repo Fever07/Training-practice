@@ -1,4 +1,4 @@
-﻿articlesBaseService.init();
+﻿viewService.init();
 
 /*const xhr = new XMLHttpRequest();
 xhr.open('POST', '/login', true);
@@ -12,6 +12,6 @@ xhr.onload = function () {
     }
 };
 xhr.send({
-    login: '',
-    password: ''
+    login: 'Vanvan',
+    password: '123456',
 });*/

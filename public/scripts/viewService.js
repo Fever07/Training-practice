@@ -8,9 +8,7 @@ viewService = (function () {
         httpService.makeRequest('POST', '/currconfig', JSON.stringify(currentConfiguration))
             .then((result) => {
 
-            }, (error) => {
-                console.log(error);
-            });
+            }, accessories.pointError);
     }
 
     function newState(newst, param) {
@@ -95,9 +93,7 @@ viewService = (function () {
                 updateMenu();
                 setterOfListeners.setMenuListeners();
                 updateUI();
-            }, (error) => {
-                console.log(error);
-            });
+            }, accessories.pointError);
     }
 
     const setterOfListeners = (function () {
@@ -141,10 +137,12 @@ viewService = (function () {
             function handleSubmit(event) {
                 if (event.target.className === 'submit-button') {
                     if (event.target.innerHTML === 'Да') {
-                        articlesBaseService.removeArticle(id);
-                        document.getElementsByClassName('background')[0].removeChild(document.getElementsByClassName('popup-blackout')[0]);
-                        newState('feed');
-                        updateUI();
+                        articlesBaseService.removeArticle(id)
+                            .then((res) => {
+                                document.getElementsByClassName('background')[0].removeChild(document.getElementsByClassName('popup-blackout')[0]);
+                                newState('feed');
+                                updateUI();
+                            }, accessories.pointError);
                     } else {
                         document.getElementsByClassName('background')[0].removeChild(document.getElementsByClassName('popup-blackout')[0]);
                         newState(currentConfiguration.previousState);
@@ -191,22 +189,22 @@ viewService = (function () {
             const minDate = '2015-01-01';
             const maxDate = '2025-01-01';
 
+            let changedFilter = false;
+
             if (event.target.id === 'name-filter') {
                 if (event.target.value === 'Все авторы')
                     currentConfiguration.currentFilter.author = null;
                 else
                     currentConfiguration.currentFilter.author = event.target.value;
+                changedFilter = true;
                 currentConfiguration.currentPage = 1;
-                setToDatabase();
-                updateDynamic();
             } else if (event.target.id === 'tags-filter') {
                 if (event.target.value === 'Все теги')
                     currentConfiguration.currentFilter.tags = null;
                 else
-                    currentConfiguration.currentFilter.tags = [event.target.value];
+                    currentConfiguration.currentFilter.tags = event.target.value;
+                changedFilter = true;
                 currentConfiguration.currentPage = 1;
-                setToDatabase();
-                updateDynamic();
             } else if (event.target.id === 'date-from-filter') {
                 if (event.target.value !== '' && event.target.value >= minDate) {
                     currentConfiguration.currentFilter.dateFrom = new Date(event.target.value);
@@ -215,8 +213,7 @@ viewService = (function () {
                     currentConfiguration.currentFilter.dateFrom = new Date(minDate);
                     currentConfiguration.currentPage = 1;
                 }
-                setToDatabase();
-                updateDynamic();
+                changedFilter = true;
             } else if (event.target.id === 'date-to-filter') {
                 if (event.target.value !== '' && event.target.value <= maxDate) {
                     currentConfiguration.currentFilter.dateTo = new Date(event.target.value);
@@ -225,25 +222,37 @@ viewService = (function () {
                     currentConfiguration.currentFilter.dateTo = new Date(maxDate);
                     currentConfiguration.currentPage = 1;
                 }
+                changedFilter = true;
+            }
+
+            if (changedFilter) {
                 setToDatabase();
-                updateDynamic();
+                articlesBaseService.getArticles(
+                    (currentConfiguration.currentPage - 1) * PAGES, currentConfiguration.currentPage * PAGES, currentConfiguration.currentFilter)
+                    .then((result) => {
+                        updateDynamic(result);
+                    }, accessories.pointError);
             }
         }
 
         function handleDetails(event) {
             if (event.target.id !== 'edit' && event.target.id !== 'remove') {
-                newState('details', articlesBaseService.getArticle(this.id));
-                updateUI();
+                articlesBaseService.getArticle(this.id)
+                    .then((res) => {
+                        newState('details', res);
+                        updateUI();
+                    }, accessories.pointError);
             }
         }
 
         function handleEdit(event) {
             if (event.target.id === 'edit') {
-                if (currentConfiguration.currentState === 'feed')
-                    newState('edit', articlesBaseService.getArticle(event.currentTarget.id));
-                else
-                    newState('edit');
-                updateUI();
+                articlesBaseService.getArticle(this.id)
+                    .then((res) => {
+                        newState('edit', res);
+                        updateUI();
+                    }, accessories.pointError);
+
             }
         }
 
@@ -272,11 +281,22 @@ viewService = (function () {
                         tempTags.push(tagNode.id);
                     });
                     articleChanged.tags = tempTags;
-                    articlesBaseService.editArticle(currentConfiguration.currentArticle, articleChanged);
-                    newState(currentConfiguration.previousState);
-                    updateUI();
+                    articlesBaseService.editArticle(currentConfiguration.currentArticle, articleChanged)
+                        .then((res) => {
+                            if (currentConfiguration.previousState === 'details') {
+                                articlesBaseService.getArticle(currentConfiguration.currentArticle.id)
+                                    .then((res) => {
+                                        newState(currentConfiguration.previousState, res);
+                                        updateUI();
+                                    }, accessories.pointError);
+                            } else {
+                                newState(currentConfiguration.previousState);
+                                updateUI();
+                            }
+                        }, accessories.pointError);
                 } else {
-                    currentConfiguration.currentArticle = articlesBaseService.createEmptyArticle(currentConfiguration.currentUser[0]);
+                    const id = document.getElementsByClassName('edit-add-container')[0].id;
+                    currentConfiguration.currentArticle = articlesBaseService.createEmptyArticle(id);
                     currentConfiguration.currentArticle.title = document.getElementById('title').value;
                     currentConfiguration.currentArticle.summary = document.getElementById('summary').value;
                     currentConfiguration.currentArticle.content = document.getElementById('content').value;
@@ -286,9 +306,15 @@ viewService = (function () {
                     });
                     currentConfiguration.currentArticle.tags = tempTags;
                     currentConfiguration.currentArticle.author = currentConfiguration.currentUser;
-                    articlesBaseService.addArticle(currentConfiguration.currentArticle);
-                    newState('feed');
-                    updateUI();
+                    articlesBaseService.addArticle(currentConfiguration.currentArticle)
+                        .then((res) => {
+                            newState('feed');
+                            updateUI();
+                        }, (err) => {
+                            console.log(err);
+                            newState('feed');
+                            updateUI();
+                        });
                 }
             }
         }
@@ -302,13 +328,11 @@ viewService = (function () {
             if (event.target.className === 'pagination-elem') {
                 currentConfiguration.currentPage = parseInt(event.target.id, 10);
                 setToDatabase();
-                articlesBaseService.new_getArticles(
+                articlesBaseService.getArticles(
                     (currentConfiguration.currentPage - 1) * PAGES, currentConfiguration.currentPage * PAGES, currentConfiguration.currentFilter)
                     .then((result) => {
                         updateDynamic(result);
-                    }, (error) => {
-                        console.log('ERRR' + error);
-                    });
+                    }, accessories.pointError);
             }
         }
 
@@ -360,8 +384,8 @@ viewService = (function () {
                 document.getElementsByClassName('pagination')[0].addEventListener('click', handlePagination);
             } else if (currentConfiguration.currentState === 'details') {
                 if (currentConfiguration.currentUser !== '') {
-                    document.getElementsByClassName('details-button')[0].addEventListener('click', handleEdit);
-                    document.getElementsByClassName('details-button')[1].addEventListener('click', handleRemove);
+                    document.getElementsByClassName('details-container')[0].addEventListener('click', handleEdit);
+                    document.getElementsByClassName('details-container')[0].addEventListener('click', handleRemove);
                 }
             } else if (currentConfiguration.currentState === 'edit' || currentConfiguration.currentState === 'add') {
                 Array.prototype.filter.call(document.getElementById('edit-tags-row').getElementsByClassName('edit-tag-element-container'),
@@ -380,28 +404,48 @@ viewService = (function () {
     }());
 
     function updateUI() {
-        updateStatic();
-        articlesBaseService.new_getArticles(
-            (currentConfiguration.currentPage - 1) * PAGES, currentConfiguration.currentPage * PAGES, currentConfiguration.currentFilter)
-            .then((result) => {
-                updateDynamic(result);
-            }, (error) => {
-                console.log('ERRR' + error);
-            });
+        if (currentConfiguration.currentState === 'feed')
+            articlesBaseService.getAllAuthors().then(
+                (result) =>  {
+                    const param = [];
+                    param[0] = result;
+                    articlesBaseService.getAllTags().then(
+                        (result) => {
+                            param[1] = result;
+                            updateStatic(param);
+                            articlesBaseService.getArticles(
+                                (currentConfiguration.currentPage - 1) * PAGES, currentConfiguration.currentPage * PAGES, currentConfiguration.currentFilter)
+                                .then((result) => {
+                                    updateDynamic(result);
+                                }, accessories.pointError);
+                        }, accessories.pointError
+                    );
+                }, accessories.pointError
+            );
+        else if (currentConfiguration.currentState === 'add') {
+            updateStatic();
+            articlesBaseService.createID(currentConfiguration.currentUser[0])
+                .then((result) => {
+                    updateDynamic(result);
+                }, accessories.pointError);
+        } else {
+            updateStatic();
+            updateDynamic();
+        }
     }
 
-    function updateStatic() {
+    function updateStatic(param) {
         let divMain = document.getElementById('main');
         divMain.parentNode.removeChild(divMain);
         if (currentConfiguration.currentState === 'feed') {
             divMain = document.querySelector('#feed-div-main').content.querySelector('div').cloneNode(true);
             document.getElementsByClassName('ground')[0].insertBefore(divMain, document.getElementsByClassName('footer')[0]);
             const selectUsers = document.getElementById('name-filter');
-            articlesBaseService.getAllAuthors().forEach((user, i) => {
+            param[0].forEach((user, i) => {
                 selectUsers.appendChild(makeElement('option', '', i, user));
             });
             const selectTags = document.getElementById('tags-filter');
-            articlesBaseService.getAllTags().forEach((tag, i) => {
+            param[1].forEach((tag, i) => {
                 selectTags.appendChild(makeElement('option', '', i, tag));
             });
         } else if (currentConfiguration.currentState === 'details') {
@@ -487,6 +531,7 @@ viewService = (function () {
             }
         } else if (currentConfiguration.currentState === 'details') {
             const detailsDiv = document.getElementsByClassName('details-central')[0];
+            detailsDiv.getElementsByClassName('details-container')[0].id = currentConfiguration.currentArticle.id;
             detailsDiv.getElementsByClassName('details-title')[0].innerHTML = currentConfiguration.currentArticle.title;
             detailsDiv.getElementsByClassName('details-author')[0].innerHTML = currentConfiguration.currentArticle.author;
             detailsDiv.getElementsByClassName('details-content')[0].innerHTML = currentConfiguration.currentArticle.content;
@@ -518,13 +563,16 @@ viewService = (function () {
             document.getElementsByClassName('edit-tags')[0].firstElementChild.appendChild(tagsRow);
             document.getElementById('content').value = currentConfiguration.currentArticle.content;
         } else if (currentConfiguration.currentState === 'add') {
-            document.getElementsByClassName('edit-top-right-col')[0].innerHTML = `ID: ${articlesBaseService.createID(currentConfiguration.currentUser[0])}`;
+            const newId = param;
+            document.getElementsByClassName('edit-add-container')[0].id = newId;
+            document.getElementsByClassName('edit-top-right-col')[0].innerHTML = `ID: ${newId}`;
             document.getElementsByClassName('edit-bot-left-col')[0].innerHTML = `${currentConfiguration.currentUser}, ${dateToString(new Date())}`;
         }
         setterOfListeners.setDynamicListeners();
     }
 
     return {
+        currentConfiguration,
         init,
     };
 }());

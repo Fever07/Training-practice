@@ -105,97 +105,101 @@
 
     <template id="details-div-main">
         <div class="details-central" id="main">
-            <div class="details-title">
-            </div>
-            <table class="details-author-and-buttons">
-                <tr>
-                    <td class="details-author-td">
-                        <div class="details-author">
-                        </div>
-                    </td>
-                </tr>
-            </table>
-            <div class="details-author">
-            </div>
-            <hr size="2" color="black">
-            <div class="details-content">
-            </div>
-            <div class="details-tags">
-            </div>
-            <div class="details-date">
+            <div class="details-container">
+                <div class="details-title">
+                </div>
+                <table class="details-author-and-buttons">
+                    <tr>
+                        <td class="details-author-td">
+                            <div class="details-author">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="details-author">
+                </div>
+                <hr size="2" color="black">
+                <div class="details-content">
+                </div>
+                <div class="details-tags">
+                </div>
+                <div class="details-date">
+                </div>
             </div>
         </div>
     </template>
 
     <template id="edit-add-div-main">
         <div class="edit-central" id="main">
-            <div class="edit-top">
-                <table class="edit-central-table">
-                    <tr class="edit-top">
-                        <td class="edit-top-left-col">
-                            Добавить / Редактировать новость
-                        </td>
-                        <td class="edit-top-right-col">
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div>
-                <form>
-                    <input class="edit-form" type="text" placeholder="Заголовок..." maxlength="100" id="title">
-                </form>
-            </div>
-            <div>
-                <form>
-                    <textarea class="edit-form-summary" placeholder="Краткое описание..." maxlength="200" id="summary"></textarea>
-                </form>
-            </div>
-            <div>
-                <table class="edit-tags-table">
-                    <tr>
-                        <td class="edit-tags-td" align="left">
-                            <table class="edit-tags">
-                                <tr id="edit-tags-row">
-                                </tr>
-                            </table>
-                        </td>
-                        <td class="edit-tags-add" align="right">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <div class="edit-tag-input-container" align="right">
-                                            <input type="text" class="edit-tag-input">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            <button id="edit-add-tag">+</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div>
-                <form>
-                    <textarea class="edit-form-content" placeholder="Текст..." rows="10" id="content"></textarea>
-                </form>
-            </div>
-            <div class="edit-bot">
-                <table class="edit-central-table">
-                    <tr>
-                        <td class="edit-bot-left-col">
-                        </td>
-                        <td class="edit-bot-right-col">
-                            Сохранить
-                        </td>
-                        <td class="edit-bot-right-col">
-                            Отмена
-                        </td>
-                    </tr>
-                </table>
+            <div class="edit-add-container">
+                <div class="edit-top">
+                    <table class="edit-central-table">
+                        <tr class="edit-top">
+                            <td class="edit-top-left-col">
+                                Добавить / Редактировать новость
+                            </td>
+                            <td class="edit-top-right-col">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div>
+                    <form>
+                        <input class="edit-form" type="text" placeholder="Заголовок..." maxlength="100" id="title">
+                    </form>
+                </div>
+                <div>
+                    <form>
+                        <textarea class="edit-form-summary" placeholder="Краткое описание..." maxlength="200" id="summary"></textarea>
+                    </form>
+                </div>
+                <div>
+                    <table class="edit-tags-table">
+                        <tr>
+                            <td class="edit-tags-td" align="left">
+                                <table class="edit-tags">
+                                    <tr id="edit-tags-row">
+                                    </tr>
+                                </table>
+                            </td>
+                            <td class="edit-tags-add" align="right">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div class="edit-tag-input-container" align="right">
+                                                <input type="text" class="edit-tag-input">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <button id="edit-add-tag">+</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div>
+                    <form>
+                        <textarea class="edit-form-content" placeholder="Текст..." rows="10" id="content"></textarea>
+                    </form>
+                </div>
+                <div class="edit-bot">
+                    <table class="edit-central-table">
+                        <tr>
+                            <td class="edit-bot-left-col">
+                            </td>
+                            <td class="edit-bot-right-col">
+                                Сохранить
+                            </td>
+                            <td class="edit-bot-right-col">
+                                Отмена
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
        </div>
     </template>
@@ -287,8 +291,9 @@
     </template>
 
     <script src="scripts/prototype.js"></script>
+    <script src="scripts/accessories.js"></script>	
     <script src="scripts/accountsDatabase.js"></script>
-    <script src="scripts/articleBaseService.js"></script>
+    <script src="scripts/articlesBaseService.js"></script>
     <script src="scripts/httpService.js"></script>
     <script src="scripts/viewService.js"></script>
     <script src="scripts/script.js"></script>

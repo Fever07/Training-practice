@@ -1,0 +1,5 @@
+{ 
+    "_id" : ObjectId("59189923d52ddba2ecde6bfd"), 
+    "name" : "numberId", 
+    "value" : NumberInt(38)
+}

@@ -3,17 +3,17 @@ accountsDatabase = (function () {
         {
             login: 'Vanvan',
             password: '123456',
-            username: 'Иван Иванов'
+            username: 'Иван Иванов',
         },
         {
             login: 'Nikoma',
             password: '1234567',
-            username: 'Николай Малышев'
+            username: 'Николай Малышев',
         },
         {
             login: 'Tanyusha',
             password: '777ppxx',
-            username: 'Татьяна Терентьева'
+            username: 'Татьяна Терентьева',
         }
     ];
 
@@ -27,7 +27,7 @@ accountsDatabase = (function () {
     }
 
     return {
-        getAccount: getAccount
+        getAccount: getAccount,
     }
 
 }());
