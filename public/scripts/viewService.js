@@ -434,6 +434,17 @@ viewService = (function () {
         }
     }
 
+    function setFilterValues() {
+        if (currentConfiguration.currentFilter.author)
+            document.getElementById('name-filter').value = currentConfiguration.currentFilter.author;
+        if (currentConfiguration.currentFilter.tags)
+            document.getElementById('tags-filter').value = currentConfiguration.currentFilter.tags;
+        if (currentConfiguration.currentFilter.dateFrom)
+            document.getElementById('date-from-filter').value = dateToFilterFormat(currentConfiguration.currentFilter.dateFrom);
+        if (currentConfiguration.currentFilter.dateTo)
+            document.getElementById('date-to-filter').value = dateToFilterFormat(currentConfiguration.currentFilter.dateTo);
+    }
+
     function updateStatic(param) {
         let divMain = document.getElementById('main');
         divMain.parentNode.removeChild(divMain);
@@ -448,6 +459,7 @@ viewService = (function () {
             param[1].forEach((tag, i) => {
                 selectTags.appendChild(makeElement('option', '', i, tag));
             });
+            setFilterValues();
         } else if (currentConfiguration.currentState === 'details') {
             divMain = document.querySelector('#details-div-main').content.querySelector('div').cloneNode(true);
             document.getElementsByClassName('ground')[0].insertBefore(divMain, document.getElementsByClassName('footer')[0]);
@@ -501,15 +513,7 @@ viewService = (function () {
                             td = row.firstElementChild;
                     }
                 });
-                if (currentConfiguration.currentFilter.author)
-                    document.getElementById('name-filter').value = currentConfiguration.currentFilter.author;
-                if (currentConfiguration.currentFilter.tags)
-                    document.getElementById('tags-filter').value = currentConfiguration.currentFilter.tags;
-
-                if (currentConfiguration.currentFilter.dateFrom)
-                    document.getElementById('date-from-filter').value = dateToFilterFormat(currentConfiguration.currentFilter.dateFrom);
-                if (currentConfiguration.currentFilter.dateTo)
-                    document.getElementById('date-to-filter').value = dateToFilterFormat(currentConfiguration.currentFilter.dateTo);
+                setFilterValues();
                 const paginationRow = document.getElementsByClassName('pagination')[0].firstElementChild.firstElementChild;
                 while (paginationRow.firstElementChild !== null)
                     paginationRow.removeChild(paginationRow.firstElementChild);

@@ -6,10 +6,11 @@ articlesBaseService = (function () {
                 .then((result) => {
                     const parsed = JSON.parse(result);
                     const arr = [];
-                    for (let key in parsed) {
-                        if (key != '_id')
-                            arr.push(key);
-                    }
+                    parsed.forEach((authorObj) => {
+                        if (authorObj.num > 0)
+                            arr.push(authorObj.author);
+                    });
+                    arr.sort();
                     resolve(arr);
                 }, (error) => {
                     reject(error);
@@ -23,10 +24,11 @@ articlesBaseService = (function () {
                 .then((result) => {
                     const parsed = JSON.parse(result);
                     const arr = [];
-                    for (let key in parsed) {
-                        if (key != '_id')
-                            arr.push(key);
-                    }
+                    parsed.forEach((tagObj) => {
+                        if (tagObj.num > 0)
+                            arr.push(tagObj.tag);
+                    });
+                    arr.sort();
                     resolve(arr);
                 }, (error) => {
                     reject(error);
@@ -65,8 +67,39 @@ articlesBaseService = (function () {
                     'id': article.id,
                     'toChange': articleChanged,
                 }
+                const tagsToAdd = [], tagsToRemove = [];
+                article.tags.forEach((tag) => {
+                    let isLeft = false;
+                    articleChanged.tags.forEach((newtag) => {
+                        if (tag === newtag)
+                            isLeft = true;
+                    });
+                    if (!isLeft)
+                        tagsToRemove.push(tag);
+                });
+                articleChanged.tags.forEach((newtag) => {
+                    let isNew = true;
+                    article.tags.forEach((tag) => {
+                        if (tag === newtag)
+                            isNew = false;
+                        });
+                        if (isNew)
+                            tagsToAdd.push(newtag);
+                });
                 httpService.makeRequest('POST', '/articlesEdit', JSON.stringify(req))
                     .then((res) => {
+                        tagsToAdd.forEach((newtag) => {
+                            httpService.makeRequest('POST', '/tagsList', JSON.stringify({
+                                'tag': newtag,
+                                'mod': 'add',
+                            }));
+                        });
+                        tagsToRemove.forEach((tag) => {
+                            httpService.makeRequest('POST', '/tagsList', JSON.stringify({
+                            'tag': tag,
+                            'mod': 'remove',
+                            }));
+                        });
                         resolve(res);
                     }, (err) => {
                         reject(err);
@@ -98,10 +131,21 @@ articlesBaseService = (function () {
             if (validateArticle(article)) {
                 httpService.makeRequest('POST', '/articlesAdd', JSON.stringify({'article': article}))
                     .then((res) => {
+                        httpService.makeRequest('POST', '/authorsList', JSON.stringify({
+                            'author': article.author,
+                            'mod': 'add',
+                        })).then(null, accessories.pointError);
+                        article.tags.forEach((tag) => {
+                            httpService.makeRequest('POST', '/tagsList', JSON.stringify({
+                                'tag': tag,
+                                'mod': 'add',
+                            }));
+                        });
                         resolve(res);
                     }, (err) => {
                         reject(err);
                     });
+
             } else
                 reject('Invalid article!');
         });
@@ -111,10 +155,24 @@ articlesBaseService = (function () {
         return new Promise((resolve, reject) => {
             httpService.makeRequest('POST', '/articlesRemove', JSON.stringify({'id': id}))
                 .then((res) => {
-                    console.log(res.responseText);
+                    const article = JSON.parse(res, (key, value) => {
+                        if (key !== '_id') {
+                            if (key === 'createdAt') return new Date(value);
+                            return value;
+                        }
+                    });
+                    httpService.makeRequest('POST', '/authorsList', JSON.stringify({
+                        'author': article.author,
+                        'mod': 'remove',
+                    })).then(null, accessories.pointError);
+                    article.tags.forEach((tag) => {
+                        httpService.makeRequest('POST', '/tagsList', JSON.stringify({
+                            'tag': tag,
+                            'mod': 'remove',
+                        }));
+                    });
                     resolve(res);
                 }, (err) => {
-                    console.log(err.responseText);
                     reject(err);
                 });
         });

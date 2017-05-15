@@ -53,6 +53,8 @@ mongoClient.connect('mongodb://localhost:27017/test', (err, db) => {
     const settings = db.collection('settings');
     const authors = db.collection('authorIndex');
     const tags = db.collection('tagsIndex');
+    const authorsList = db.collection('authorsList');
+    const tagsList = db.collection('tagsList');
 
     passport.use(new LocalStrategy({
             usernameField: 'login',
@@ -126,51 +128,117 @@ mongoClient.connect('mongodb://localhost:27017/test', (err, db) => {
     });
 
     app.get('/tagsGet', (req, res) => {
-        tags.findOne().then((result) => {
-            res.send(result);
-        }, (err) => {
-            console.log(err);
+        tagsList.find({}, (err, result) => {
+            if (err)
+                console.log(err);
+            result.toArray().then((resultArray) => {
+                res.send(resultArray);
+            }, (error) => {
+                console.log(error);
+            });
         });
     });
 
     app.get('/authorsGet', (req, res) => {
-        authors.findOne().then((result) => {
-            res.send(result);
-        }, (err) => {
-            console.log(err);
+        authorsList.find({}, (err, result) => {
+            if (err)
+                console.log(err);
+            result.toArray().then((resultArray) => {
+                res.send(resultArray);
+            }, (error) => {
+                console.log(error);
+            });
         });
+    });
+
+    app.post('/authorsList', (req, res) => {
+         authorsList.findOne({'author': req.body.author}).then(
+            (result) => {
+                let num;
+                if (req.body.mod === 'add')
+                    num = result.num + 1;
+                else
+                    num = result.num - 1;
+                authorsList.updateOne({'author': result.author}, {$set: {'num': num}});
+            }, (err) => {
+                console.log(err);
+            });
+    });
+
+    app.post('/tagsList', (req, res) => {
+        tagsList.findOne({'tag': req.body.tag}).then(
+            (result) => {
+                if (!result) {
+                    if (req.body.mod === 'add')
+                        tagsList.insertOne({
+                            'tag': req.body.tag,
+                            'num': 1,
+                        });
+                } else {
+                    let num;
+                    if (req.body.mod === 'add')
+                        num = result.num + 1;
+                    else
+                        num = result.num - 1;
+                    tagsList.updateOne({'tag': result.tag}, {$set: {'num': num}});
+                }
+            }, (err) => {
+                console.log(err);
+            }
+        )
     });
 
     app.post('/tagsPush', (req, res) => {
         articlesdb.find({}, (err, item) => {
             item.toArray().then((array) => {
-                let authorInd = {};
+                const tagsAll = [];
                 array.forEach((article) => {
                     article.tags.forEach((tag) => {
-                        authorInd[tag] = [];
+                        const tagObj = {'tag': tag, 'ids': []};
+                        let ist = false;
+                        tagsAll.forEach((tagg) => {
+                            if (tagg.tag === tagObj.tag)
+                                ist = true;
+                        });
+                        if (!ist)
+                            tagsAll.push(tagObj);
                     });
                 });
+                console.log(tagsAll);
                 array.forEach((article) => {
                     article.tags.forEach((tag) => {
-                        authorInd[tag].push(article.id);
+                        tagsAll.forEach((tagg) => {
+                            if (tagg.tag === tag)
+                                tagg.ids.push(article.id);
+                        });
                     });
                 });
-                db.collection('tagsIndex').insertOne(authorInd);
+                tags.insertMany(tagsAll);
             });
         });
     });
 
-    app.post('/authorPush', (req, res) => {
+    app.post('/authorsPush', (req, res) => {
         articlesdb.find({}, (err, item) => {
             item.toArray().then((array) => {
-                let authorInd = {};
+                const authorsAll = [];
                 array.forEach((article) => {
-                    authorInd[article.author] = [];
+                    const authorObj = {'author': article.author, 'ids': []};
+                    let ist = false;
+                    authorsAll.forEach((authorr) => {
+                        if (authorr.author === authorObj.author)
+                            ist = true;
+                    });
+                    if (!ist)
+                        authorsAll.push(authorObj);
                 });
                 array.forEach((article) => {
-                    authorInd[article.author].push(article.id);
+                    authorsAll.forEach((authorr) => {
+                        if (authorr.author === article.author)
+                            authorr.ids.push(article.id);
+                    });
                 });
-                db.collection('authorIndex').insertOne(authorInd);
+                authors.insertMany(authorsAll);
             });
         });
     });
@@ -262,13 +330,17 @@ mongoClient.connect('mongodb://localhost:27017/test', (err, db) => {
     });
 
     app.post('/articlesRemove', (req, res) => {
-        articlesdb.remove({'id': req.body.id}, true)
+        articlesdb.findOne({'id': req.body.id})
         .then((result) => {
-            res.send(JSON.stringify({'responseText': 'Removed succesfully!'}));
+            res.send(result);
+            articlesdb.remove({'id': req.body.id}, true)
+            .then(null, (error) => {
+                console.log(error);
+            });
         }, (error) => {
             console.log(error);
-            res.send(JSON.stringify({'responseText': 'Error! See console for more'}));
         });
+
     });
 
     app.post('/currconfig', (req, res) => {

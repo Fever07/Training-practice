@@ -1,0 +1,40 @@
+{ 
+    "_id" : ObjectId("5919b81ad52ddb125cf6abb0"), 
+    "author" : "Татьяна Терентьева", 
+    "num" : NumberInt(7)
+}
+{ 
+    "_id" : ObjectId("5919b81ad52ddb125cf6abb1"), 
+    "author" : "Саша Кузьмина", 
+    "num" : NumberInt(2)
+}
+{ 
+    "_id" : ObjectId("5919b81ad52ddb125cf6abb2"), 
+    "author" : "Иван Иванов", 
+    "num" : NumberInt(2)
+}
+{ 
+    "_id" : ObjectId("5919b81ad52ddb125cf6abb3"), 
+    "author" : "Виктор Петрович", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919b81ad52ddb125cf6abb4"), 
+    "author" : "Виталий Шидлов", 
+    "num" : NumberInt(2)
+}
+{ 
+    "_id" : ObjectId("5919b81ad52ddb125cf6abb5"), 
+    "author" : "Сергей Иванов", 
+    "num" : NumberInt(2)
+}
+{ 
+    "_id" : ObjectId("5919b81ad52ddb125cf6abb6"), 
+    "author" : "Александр Новицкий", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919b81ad52ddb125cf6abb7"), 
+    "author" : "Николай Малышев", 
+    "num" : NumberInt(4)
+}

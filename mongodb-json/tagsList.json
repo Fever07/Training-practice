@@ -1,0 +1,220 @@
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad3b"), 
+    "tag" : "Минск", 
+    "num" : NumberInt(2)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad3c"), 
+    "tag" : "Авария", 
+    "num" : NumberInt(0)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad3d"), 
+    "tag" : "Россия", 
+    "num" : NumberInt(3)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad3e"), 
+    "tag" : "РЖД", 
+    "num" : NumberInt(-1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad3f"), 
+    "tag" : "Цепкало", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad40"), 
+    "tag" : "ПВТ", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad41"), 
+    "tag" : "Евросоюз", 
+    "num" : NumberInt(0)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad42"), 
+    "tag" : "Украина", 
+    "num" : NumberInt(0)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad43"), 
+    "tag" : "Безвизовый режим", 
+    "num" : NumberInt(0)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad44"), 
+    "tag" : "Сирия", 
+    "num" : NumberInt(2)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad45"), 
+    "tag" : "Хоккей", 
+    "num" : NumberInt(2)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad46"), 
+    "tag" : "Беларусь", 
+    "num" : NumberInt(5)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad47"), 
+    "tag" : "Париж", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad48"), 
+    "tag" : "Грузия", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad49"), 
+    "tag" : "Александр Лукашенко", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad4a"), 
+    "tag" : "Погода", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad4b"), 
+    "tag" : "Сильный ветер", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad4c"), 
+    "tag" : "Медведев", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad4d"), 
+    "tag" : "Навальный", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad4e"), 
+    "tag" : "Верующие", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad4f"), 
+    "tag" : "Литва", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad50"), 
+    "tag" : "Авиация", 
+    "num" : NumberInt(3)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad51"), 
+    "tag" : "Куропаты", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad52"), 
+    "tag" : "Динамо", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad53"), 
+    "tag" : "США", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad54"), 
+    "tag" : "Опра", 
+    "num" : NumberInt(0)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad55"), 
+    "tag" : "Президентские выборы", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad56"), 
+    "tag" : "Нефть", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad57"), 
+    "tag" : "Путин", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad58"), 
+    "tag" : "Биатлон", 
+    "num" : NumberInt(-1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad59"), 
+    "tag" : "Дальмайер", 
+    "num" : NumberInt(0)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad5a"), 
+    "tag" : "Norm", 
+    "num" : NumberInt(0)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad5b"), 
+    "tag" : "Galleria", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad5c"), 
+    "tag" : "Reserved", 
+    "num" : NumberInt(-1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad5d"), 
+    "tag" : "Тунеядцы", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad5e"), 
+    "tag" : "Газпром центр", 
+    "num" : NumberInt(-1)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad5f"), 
+    "tag" : "idid", 
+    "num" : NumberInt(0)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad60"), 
+    "tag" : "Евровидение", 
+    "num" : NumberInt(0)
+}
+{ 
+    "_id" : ObjectId("5919abd4475e62139839ad61"), 
+    "tag" : "Франция", 
+    "num" : NumberInt(0)
+}
+{ 
+    "_id" : ObjectId("591a10a7de272d177c986879"), 
+    "tag" : "Сквер", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("591a1107de272d177c98687b"), 
+    "tag" : "Экономика", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("591a1a109e3f871008edc015"), 
+    "tag" : "Общество", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("591a1a109e3f871008edc016"), 
+    "tag" : "Путешествия", 
+    "num" : NumberInt(1)
+}
+{ 
+    "_id" : ObjectId("591a1b289e3f871008edc01a"), 
+    "tag" : "123", 
+    "num" : NumberInt(0)
+}
