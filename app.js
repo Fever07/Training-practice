@@ -44,11 +44,11 @@ database.connect('./database/', ['currconfig']);
 mongoClient.connect('mongodb://localhost:27017/test', (err, db) => {
 
     if (err) {
-        console.log('MONGODB ERROR:')
+        console.log('MONGODB ERROR:');
         console.log(err);
     }
 
-    const usersdb = db.collection('users');
+    const usersdb = db.collection('userstest');
     const articlesdb = db.collection('articles');
     const settings = db.collection('settings');
     const authors = db.collection('authorIndex');
@@ -56,13 +56,23 @@ mongoClient.connect('mongodb://localhost:27017/test', (err, db) => {
     const authorsList = db.collection('authorsList');
     const tagsList = db.collection('tagsList');
 
+	passport.serializeUser(function(user, done) {
+		done(null, user._id);
+	});
+
+	passport.deserializeUser(function(id, done) {
+		usersdb.findById(id, function(err, user) {
+			done(err, user);
+		});
+	});
+
     passport.use(new LocalStrategy({
             usernameField: 'login',
             passwordField: 'password'
         }, (username, password, done) => {
             console.log('STRATEGY::');
-            console.log(username, password, done);
-            usersdb.findOne({ username: username }, (err, user) => {
+            console.log(username, password);
+            usersdb.findOne({ login: username }, (err, user) => {
                 if (err) {
                     return done(err);
                 }
@@ -71,7 +81,7 @@ mongoClient.connect('mongodb://localhost:27017/test', (err, db) => {
                         message: 'Incorrect username.'
                     });
                 }
-                if (!user.validPassword(password)) {
+                if (user.password !== password) {
                     return done(null, false, {
                         message: 'Incorrect password.'
                     });
@@ -81,31 +91,10 @@ mongoClient.connect('mongodb://localhost:27017/test', (err, db) => {
         }
     ));
 
-    app.post('/login', (req, res, next) => {
-        passport.authenticate('local', (err, user, info) => {
-            console.log(err, user, info);
-            console.log(req.body, res.body, next);
-            if (err) {
-                console.log(1);
-                return next(err);
-            }
-            if (!user) {
-                console.log(2);
-                return next(null, false, {
-                    message: 'Incorrect username'
-                });
-            }
-            req.logIn(user, function(err) {
-                console.log(3);
-                if (err) {
-                    console.log(4);
-                    return next(err);
-                }
-                console.log(5);
-                return next(null, user);
-            });
-        })(req, res, next);
-    });
+    app.post('/login',
+        passport.authenticate('local'), (req, res) => {
+    	    res.send(req.user);
+	    });
 
     app.get('/articlesMap', (req, res) => {
         res.send(database.articlesMap.find());
