@@ -11,7 +11,7 @@
 { 
     "_id" : ObjectId("5919abd4475e62139839ad3d"), 
     "tag" : "Россия", 
-    "num" : NumberInt(3)
+    "num" : NumberInt(4)
 }
 { 
     "_id" : ObjectId("5919abd4475e62139839ad3e"), 
@@ -21,12 +21,12 @@
 { 
     "_id" : ObjectId("5919abd4475e62139839ad3f"), 
     "tag" : "Цепкало", 
-    "num" : NumberInt(1)
+    "num" : NumberInt(0)
 }
 { 
     "_id" : ObjectId("5919abd4475e62139839ad40"), 
     "tag" : "ПВТ", 
-    "num" : NumberInt(1)
+    "num" : NumberInt(0)
 }
 { 
     "_id" : ObjectId("5919abd4475e62139839ad41"), 
@@ -71,7 +71,7 @@
 { 
     "_id" : ObjectId("5919abd4475e62139839ad49"), 
     "tag" : "Александр Лукашенко", 
-    "num" : NumberInt(1)
+    "num" : NumberInt(2)
 }
 { 
     "_id" : ObjectId("5919abd4475e62139839ad4a"), 
@@ -201,20 +201,25 @@
 { 
     "_id" : ObjectId("591a1107de272d177c98687b"), 
     "tag" : "Экономика", 
-    "num" : NumberInt(1)
+    "num" : NumberInt(2)
 }
 { 
     "_id" : ObjectId("591a1a109e3f871008edc015"), 
     "tag" : "Общество", 
-    "num" : NumberInt(1)
+    "num" : NumberInt(2)
 }
 { 
     "_id" : ObjectId("591a1a109e3f871008edc016"), 
     "tag" : "Путешествия", 
-    "num" : NumberInt(1)
+    "num" : NumberInt(0)
 }
 { 
     "_id" : ObjectId("591a1b289e3f871008edc01a"), 
     "tag" : "123", 
+    "num" : NumberInt(0)
+}
+{ 
+    "_id" : ObjectId("5928572448d2f91950cd5224"), 
+    "tag" : "Лукашенко", 
     "num" : NumberInt(0)
 }

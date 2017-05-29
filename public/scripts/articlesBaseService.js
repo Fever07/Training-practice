@@ -45,16 +45,7 @@ articlesBaseService = (function () {
             };
             httpService.makeRequest('POST', '/articlesGet', JSON.stringify(req))
                 .then((result) => {
-                    const parsedResult = JSON.parse(result, (key, value) => {
-                        if (key === 'createdAt') return new Date(value);
-                        return value;
-                    });
-                    const articlesData = parsedResult[0];
-                    const numOfFilteredArticles = parsedResult[1];
-                    const ret = [];
-                    ret.push(articlesData);
-                    ret.push(numOfFilteredArticles);
-                    resolve(ret);
+                    resolve(JSON.parse(result, accessories.articleParser));
                 }, accessories.pointError);
         });
     }
@@ -111,14 +102,9 @@ articlesBaseService = (function () {
 
     function getArticle(id) {
         return new Promise((resolve, reject) => {
-            httpService.makeRequest('POST', '/articlesGetById', JSON.stringify({'id': id}))
+            httpService.makeRequest('POST', '/articlesGetById', JSON.stringify({ 'id': id }))
                 .then((res) => {
-                    const article = JSON.parse(res, (key, value) => {
-                        if (key !== '_id') {
-                            if (key === 'createdAt') return new Date(value);
-                            return value;
-                        }
-                    });
+                    const article = JSON.parse(res, accessories.articleParser);
                     resolve(article);
                 }, (err) => {
                     reject(err);
@@ -129,7 +115,7 @@ articlesBaseService = (function () {
     function addArticle(article) {
         return new Promise((resolve, reject) => {
             if (validateArticle(article)) {
-                httpService.makeRequest('POST', '/articlesAdd', JSON.stringify({'article': article}))
+                httpService.makeRequest('POST', '/articlesAdd', JSON.stringify({ 'article': article }))
                     .then((res) => {
                         httpService.makeRequest('POST', '/authorsList', JSON.stringify({
                             'author': article.author,
@@ -153,14 +139,9 @@ articlesBaseService = (function () {
 
     function removeArticle(id) {
         return new Promise((resolve, reject) => {
-            httpService.makeRequest('POST', '/articlesRemove', JSON.stringify({'id': id}))
+            httpService.makeRequest('POST', '/articlesRemove', JSON.stringify({ 'id': id }))
                 .then((res) => {
-                    const article = JSON.parse(res, (key, value) => {
-                        if (key !== '_id') {
-                            if (key === 'createdAt') return new Date(value);
-                            return value;
-                        }
-                    });
+                    const article = JSON.parse(res, accessories.articleParser);
                     httpService.makeRequest('POST', '/authorsList', JSON.stringify({
                         'author': article.author,
                         'mod': 'remove',

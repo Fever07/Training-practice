@@ -5,12 +5,16 @@
 		"indent": ["error", 4],
 		"no-use-before-define": ["error", { "variables": false }],
 		"no-param-reassign": ["error", { "props": false }],
+		"quote-props": "off",
 		"curly": "off",
 		"no-plusplus": "off",
 		"no-use-before-define": "off",
 		"func-names": "off",
 		"padded-blocks": "off",
-		"max-len": "off"
+		"max-len": "off",
+		"no-console": "off",
+		"no-tabs": "off",
+		"indent": "off"
 	},
 	"globals": {
 		"accountsDatabase": false,

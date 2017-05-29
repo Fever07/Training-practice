@@ -1,7 +1,7 @@
 { 
     "_id" : ObjectId("5919b81ad52ddb125cf6abb0"), 
     "author" : "Татьяна Терентьева", 
-    "num" : NumberInt(7)
+    "num" : NumberInt(13)
 }
 { 
     "_id" : ObjectId("5919b81ad52ddb125cf6abb1"), 
@@ -11,7 +11,7 @@
 { 
     "_id" : ObjectId("5919b81ad52ddb125cf6abb2"), 
     "author" : "Иван Иванов", 
-    "num" : NumberInt(2)
+    "num" : NumberInt(0)
 }
 { 
     "_id" : ObjectId("5919b81ad52ddb125cf6abb3"), 
@@ -36,5 +36,5 @@
 { 
     "_id" : ObjectId("5919b81ad52ddb125cf6abb7"), 
     "author" : "Николай Малышев", 
-    "num" : NumberInt(4)
+    "num" : NumberInt(5)
 }

@@ -5,10 +5,7 @@ viewService = (function () {
     let currentConfiguration;
 
     function setToDatabase() {
-        httpService.makeRequest('POST', '/currconfig', JSON.stringify(currentConfiguration))
-            .then((result) => {
-
-            }, accessories.pointError);
+        localStorage.setItem('currconf', JSON.stringify(currentConfiguration));
     }
 
     function newState(newst, param) {
@@ -81,19 +78,24 @@ viewService = (function () {
     }
 
     function init() {
-        httpService.makeRequest('GET', '/currconfig')
-            .then((result) => {
-                currentConfiguration = JSON.parse(result, (key, value) => {
-                    if (key === 'dateFrom' || key === 'dateTo' || key === 'createdAt')
-                        return new Date(value);
-                    if (key === 'currentPage')
-                        return parseInt(value, 10);
-                    return value;
-                })[0];
-                updateMenu();
-                setterOfListeners.setMenuListeners();
-                updateUI();
-            }, accessories.pointError);
+        currentConfiguration = JSON.parse(localStorage.getItem('currconf'), accessories.configParser);
+        if (!currentConfiguration)
+            currentConfiguration = {
+                'previousState': '',
+                'currentState': 'feed',
+                'currentFilter': {
+                    'author': null,
+                    'dateFrom': new Date('2015-01-01T00:00:00.000Z'),
+                    'tags': null,
+                    'dateTo': new Date('2025-01-01T00:00:00.000Z'),
+                },
+                'currentPage': 1,
+                'currentArticle': null,
+                'currentUser': '',
+            };
+        updateMenu();
+        setterOfListeners.setMenuListeners();
+        updateUI();
     }
 
     const setterOfListeners = (function () {
@@ -101,18 +103,20 @@ viewService = (function () {
         function showLoginWindow() {
 
             function handleLogin() {
-                const account = accountsDatabase.getAccount(document.getElementById('login').value, document.getElementById('password').value);
-                if (account) {
-                    currentConfiguration.currentUser = account.username;
+                httpService.makeRequest('POST', '/login', JSON.stringify({
+                    'login': document.getElementById('login').value,
+                    'password': document.getElementById('password').value,
+                })).then((res) => {
+                    currentConfiguration.currentUser = JSON.parse(res).username;
                     setToDatabase();
                     document.getElementsByClassName('background')[0].removeChild(document.getElementsByClassName('popup-blackout')[0]);
                     document.onkeydown = null;
                     newState('feed');
                     updateMenu();
                     updateUI();
-                } else {
+                }, (err) => {
                     loginWindow.getElementsByClassName('login-incorrect-message')[0].innerHTML = 'Неверные данные';
-                }
+                });
             }
 
             const loginWindow = document.querySelector('#login-window').content.querySelector('div').cloneNode(true);
@@ -132,7 +136,7 @@ viewService = (function () {
             loginWindow.getElementsByClassName('menu-item')[0].addEventListener('click', handleLogin);
         }
 
-        function showSubmitDeleteWindow(id) {
+        function showSubmitDeleteWindow(id, param) {
 
             function handleSubmit(event) {
                 if (event.target.className === 'submit-button') {
@@ -176,6 +180,7 @@ viewService = (function () {
             } else if (event.target.innerHTML === 'Авторизация') {
                 showLoginWindow();
             } else if (event.target.innerHTML === 'Выход') {
+                httpService.makeRequest('POST', '/logout');
                 currentConfiguration.currentUser = '';
                 setToDatabase();
                 newState('feed', 1);
@@ -308,7 +313,7 @@ viewService = (function () {
                     currentConfiguration.currentArticle.author = currentConfiguration.currentUser;
                     articlesBaseService.addArticle(currentConfiguration.currentArticle)
                         .then((res) => {
-                            newState('feed');
+                            newState('details');
                             updateUI();
                         }, (err) => {
                             console.log(err);
@@ -406,7 +411,7 @@ viewService = (function () {
     function updateUI() {
         if (currentConfiguration.currentState === 'feed')
             articlesBaseService.getAllAuthors().then(
-                (result) =>  {
+                (result) => {
                     const param = [];
                     param[0] = result;
                     articlesBaseService.getAllTags().then(
@@ -416,7 +421,13 @@ viewService = (function () {
                             articlesBaseService.getArticles(
                                 (currentConfiguration.currentPage - 1) * PAGES, currentConfiguration.currentPage * PAGES, currentConfiguration.currentFilter)
                                 .then((result) => {
-                                    updateDynamic(result);
+                                    if (result[1])
+                                        updateDynamic(result);
+                                    else {
+                                        currentConfiguration.currentFilter.authors = null;
+                                        currentConfiguration.currentFilter.tags = null;
+                                        updateUI();
+                                    }
                                 }, accessories.pointError);
                         }, accessories.pointError
                     );
@@ -576,7 +587,6 @@ viewService = (function () {
     }
 
     return {
-        currentConfiguration,
         init,
     };
 }());
